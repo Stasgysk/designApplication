@@ -2,9 +2,7 @@ package sk.student.tuke.sk.applikacia.entities;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -17,6 +15,7 @@ import java.util.List;
 public class User {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "user_name")

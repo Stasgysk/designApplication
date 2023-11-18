@@ -27,10 +27,11 @@ $$
         WHEN duplicate_object THEN null;
     END
 $$;
+CREATE SEQUENCE IF NOT EXISTS users_id_seq;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id SERIAL PRIMARY KEY,
+    id INT8 DEFAULT nextval('users_id_seq') PRIMARY KEY,
     user_name user_name NOT NULL,
     firstname user_name,
     surname user_name,
