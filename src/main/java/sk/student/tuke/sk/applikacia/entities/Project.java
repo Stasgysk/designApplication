@@ -31,7 +31,7 @@ public class Project {
         this.userId = userId;
     }
 
-    public Project() {
+    protected Project() {
 
     }
 

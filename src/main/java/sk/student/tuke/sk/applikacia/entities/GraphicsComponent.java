@@ -31,7 +31,7 @@ public class GraphicsComponent {
         this.description = description;
     }
 
-    public GraphicsComponent() {
+    protected GraphicsComponent() {
 
     }
 
