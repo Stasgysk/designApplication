@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import {Route, Routes} from "react-router-dom"
+import Login from "./pages/Login";
+import {useCookies} from "react-cookie";
+import Main from "./pages/Main";
+import {useEffect} from "react";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    const [cookies] = useCookies(["user"]);
+
+    useEffect(() => {
+
+    }, [cookies]);
+
+    console.log(cookies.user);
+
+    return (
+    <div id="container-background">
+        <div id="container">
+            <Routes>
+                {cookies?.user ? (
+                    <Route path="/" element={<Main/>}/>
+                ) : (
+                    <Route path="/" element={<Login/>}/>
+                )}
+            </Routes>
+        </div>
     </div>
-  );
+    );
 }
 
 export default App;
