@@ -36,7 +36,9 @@ public class User {
 
     private Integer age;
 
-    public User(String username, @Nullable String firstname, @Nullable String surname, String email, @Nullable List<String> user_settings, @Nullable String phone_number, @Nullable String gender, @Nullable Integer age) {
+    private String picture;
+
+    public User(String username, @Nullable String firstname, @Nullable String surname, String email, @Nullable List<String> user_settings, @Nullable String phone_number, @Nullable String gender, @Nullable Integer age, String picture) {
         this.username = username;
         this.firstname = firstname;
         this.surname = surname;
@@ -45,11 +47,18 @@ public class User {
         this.phone_number = phone_number;
         this.gender = gender;
         this.age = age;
+        this.picture = picture;
     }
 
     public User(String username, String email) {
         this.username = username;
         this.email = email;
+    }
+
+    public User(String username, String email, String picture) {
+        this.username = username;
+        this.email = email;
+        this.picture = picture;
     }
 
     protected User() {
@@ -68,6 +77,7 @@ public class User {
                 ", phone_number='" + phone_number + '\'' +
                 ", gender='" + gender + '\'' +
                 ", age=" + age +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 }

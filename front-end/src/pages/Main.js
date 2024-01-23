@@ -10,9 +10,20 @@ export default function Main() {
     }
 
     return (
-        <div>
-            <h1>ssdsadas</h1>
-            <button onClick={onClickLogout}>Logout</button>
+        <div id="main-container">
+            <div id="left-panel">
+                <div id="user-info">
+                    <button onClick={onClickLogout}>Logout</button>
+                </div>
+                <div id="projects">
+
+                </div>
+                <div id="shop">
+
+                </div>
+            </div>
+            <div id="center-right-panel">
+            </div>
         </div>
     )
 }

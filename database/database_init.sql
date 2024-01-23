@@ -32,10 +32,10 @@ CREATE SEQUENCE IF NOT EXISTS users_id_seq;
 CREATE TABLE IF NOT EXISTS users
 (
     id INT8 DEFAULT nextval('users_id_seq') PRIMARY KEY,
-    user_name user_name NOT NULL,
+    user_name user_name NOT NULL UNIQUE,
     firstname user_name,
     surname user_name,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     user_settings JSONB,
     phone_number VARCHAR(15),
     gender VARCHAR(5),

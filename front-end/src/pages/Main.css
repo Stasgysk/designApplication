@@ -1,0 +1,32 @@
+#main-container {
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vw;
+    background: #1c1c1c;
+}
+
+#left-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 265px;
+    border-right: #555555 solid 1px;
+}
+
+#center-right-panel {
+    width: 100%;
+}
+
+#user-info {
+    min-height: 20vh;
+    border-bottom: #555555 solid 1px;
+}
+
+#projects {
+    min-height: 20vh;
+    border-bottom: #555555 solid 1px;
+}
+
+#shop {
+    min-height: 20vh;
+    border-bottom: #555555 solid 1px;
+}

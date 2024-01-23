@@ -16,17 +16,19 @@ function App() {
     console.log(cookies.user);
 
     return (
-    <div id="container-background">
-        <div id="container">
-            <Routes>
-                {cookies?.user ? (
-                    <Route path="/" element={<Main/>}/>
-                ) : (
-                    <Route path="/" element={<Login/>}/>
-                )}
-            </Routes>
+        <div id="container-background">
+            <div id="container-background-photo">
+                <div id="container">
+                    <Routes>
+                        {cookies?.user ? (
+                            <Route path="/" element={<Main/>}/>
+                        ) : (
+                            <Route path="/" element={<Login/>}/>
+                        )}
+                    </Routes>
+                </div>
+            </div>
         </div>
-    </div>
     );
 }
 
