@@ -60,4 +60,9 @@ public class ComponentService implements ServiceInterface<GraphicsComponent> {
         }
         return null;
     }
+
+    @Override
+    public GraphicsComponent findByName(String name) throws DatabaseError {
+        return null;
+    }
 }

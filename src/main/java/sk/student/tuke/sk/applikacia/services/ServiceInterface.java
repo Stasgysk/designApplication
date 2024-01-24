@@ -15,4 +15,6 @@ public interface ServiceInterface<T> {
     T findById(T t) throws DatabaseError;
 
     T findById(Long id) throws DatabaseError;
+
+    T findByName(String name) throws DatabaseError;
 }

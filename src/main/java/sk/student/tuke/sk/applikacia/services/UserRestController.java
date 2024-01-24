@@ -1,10 +1,15 @@
 package sk.student.tuke.sk.applikacia.services;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import sk.student.tuke.sk.applikacia.entities.User;
+import sk.student.tuke.sk.applikacia.entities.UserAuthResponse;
 import sk.student.tuke.sk.applikacia.exceptions.DatabaseError;
 
 import java.util.List;
@@ -22,28 +27,39 @@ public class UserRestController {
 
     @CrossOrigin(origins = "#{${react.address}}")
     @PostMapping("/")
-    public void addUser(@RequestBody User user) throws DatabaseError {
+    @ResponseBody
+    public UserAuthResponse addUser(@RequestBody User user) throws DatabaseError {
         if(user.getEmail().isEmpty() || user.getUsername().isEmpty()){
-            return;
-            //JSONObject json = new JSONObject("{\"error\":\"username or email is empty\"}");
-            //return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
+            return null;
         }
         List<User> userList = userService.getAll();
         for(User userInList: userList) {
             if(userInList.getUsername().equals(user.getUsername()) || userInList.getEmail().equals(user.getEmail())){
-                return;
-                //JSONObject json = new JSONObject("{\"response\":\"Already exists!\"}");
-                //return new ResponseEntity<>(json, HttpStatus.OK);
+                return null;
             }
         }
+        String jwtToken = new JwtVerify(user.getUsername()).getToken();
+        UserAuthResponse userAuthResponse = new UserAuthResponse(jwtToken, user);
+
         userService.add(user);
-        //JSONObject json = new JSONObject("{\"response\":\"Saved\"}");
-        //return new ResponseEntity<>(json, HttpStatus.OK);
+        return userAuthResponse;
     }
 
-    @GetMapping("/")
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping("/get")
+    @ResponseBody
     public User getUserByInfo(@RequestBody String requestBody) throws DatabaseError, JSONException {
         JSONObject body = new JSONObject(requestBody);
+
+        if(body.has("jwt") && body.has("username")){
+            String username = body.get("username").toString();
+            JwtVerify jwtVerify = new JwtVerify(username);
+            try {
+                jwtVerify.verify(body.get("jwt").toString());
+            } catch (JWTVerificationException exception) {
+                return null;
+            }
+        }
 
         List<User> userList = userService.getAll();
 

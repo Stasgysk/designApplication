@@ -61,4 +61,10 @@ public class ProjectService implements ServiceInterface<Project> {
         }
         return null;
     }
+
+    @Override
+    public Project findByName(String name) throws DatabaseError {
+
+        return null;
+    }
 }

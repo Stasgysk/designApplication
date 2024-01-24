@@ -31,6 +31,10 @@ public class Project {
         this.userId = userId;
     }
 
+    public Project(String name, Long userId) {
+
+    }
+
     protected Project() {
 
     }

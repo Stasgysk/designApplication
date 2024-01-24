@@ -61,4 +61,15 @@ public class UserService implements ServiceInterface<User> {
         }
         return null;
     }
+
+    @Override
+    public User findByName(String name) throws DatabaseError {
+        List<User> users = this.getAll();
+        for(User userInList: users){
+            if(userInList.getUsername().equals(name)){
+                return userInList;
+            }
+        }
+        return null;
+    }
 }

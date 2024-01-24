@@ -3,10 +3,11 @@ import {GoogleLogin} from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { CookiesProvider, useCookies } from "react-cookie";
 import {postUser} from "../api/user.service";
+import {getProjects} from "../api/project.service";
 
 
 export default function Login(props) {
-    const [, setCookie] = useCookies(["user"]);
+    const [cookies, setCookie] = useCookies(["jwtToken", "user", "projects"]);
 
     function onGoogleLogin(response) {
         const user = jwtDecode(response.credential);
@@ -16,9 +17,18 @@ export default function Login(props) {
             picture: user.picture.toString()
         };
         postUser(cookieToStore).then((response) => {
-            console.log(response);
+            setCookie("jwtToken", response.data.jwt, { path: "/" });
         });
         setCookie("user", cookieToStore, { path: "/" });
+        const body = {
+            username: cookies.user.username.toString(),
+            email: cookies.user.email.toString(),
+            picture: cookies.user.picture.toString(),
+            jwt: cookies.jwtToken
+        };
+        getProjects(body).then(() => {
+            setCookie("projects", response.data, { path: "/" });
+        });
     }
 
     function onGoogleLoginError() {
