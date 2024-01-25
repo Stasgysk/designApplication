@@ -1,0 +1,91 @@
+#main-project-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+#main-project-container-background {
+    background-color: rgb(44,44,44);
+    width: 100%;
+    height: 100%;
+}
+
+#project-content {
+    width: 100%;
+    height: 100%;
+}
+
+#upper-project-menu {
+    display: flex;
+    width: 100%;
+    height: 25px;
+    gap: 10px;
+    align-items: center;
+    padding-left: 35px;
+    background-color: #555555;
+}
+
+#under-project-menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#left-project-menu {
+    height: 100%;
+    width: 35px;
+    background-color: #555555;
+    display: flex;
+    flex-direction: column;
+}
+
+#main-project-menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#project-canvas{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#canvas {
+    background-color: white;
+    width: 57vh;
+    height: 80vh;
+    margin: auto;
+}
+
+#project-right-options {
+    height: 100%;
+    width: 20%;
+}
+
+.upper-menu-button {
+    font-size: 13px;
+    color: white;
+    background-color: #555555;
+    border: 0;
+    border-radius: 2px;
+    height: 80%;
+}
+
+.upper-menu-button:hover {
+    background-color: #1c1c1c;
+}
+
+.left-menu-button {
+    padding: 5px;
+    font-size: 13px;
+    color: white;
+    background-color: #555555;
+    border: 0;
+    border-radius: 2px;
+}
+
+.left-menu-button:hover {
+    background-color: #1c1c1c;
+}

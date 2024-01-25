@@ -4,10 +4,25 @@ import { jwtDecode } from "jwt-decode";
 import { CookiesProvider, useCookies } from "react-cookie";
 import {postUser} from "../api/user.service";
 import {getProjects} from "../api/project.service";
+import {useEffect} from "react";
 
 
 export default function Login(props) {
     const [cookies, setCookie] = useCookies(["jwtToken", "user", "projects"]);
+
+    useEffect(() => {
+        if(cookies?.user) {
+            const body = {
+                username: cookies.user.username.toString(),
+                email: cookies.user.email.toString(),
+                picture: cookies.user.picture.toString(),
+                jwt: cookies.jwtToken
+            };
+            getProjects(body).then((response) => {
+                setCookie("projects", response.data, { path: "/" });
+            });
+        }
+    }, [cookies]);
 
     function onGoogleLogin(response) {
         const user = jwtDecode(response.credential);
@@ -20,15 +35,6 @@ export default function Login(props) {
             setCookie("jwtToken", response.data.jwt, { path: "/" });
         });
         setCookie("user", cookieToStore, { path: "/" });
-        const body = {
-            username: cookies.user.username.toString(),
-            email: cookies.user.email.toString(),
-            picture: cookies.user.picture.toString(),
-            jwt: cookies.jwtToken
-        };
-        getProjects(body).then(() => {
-            setCookie("projects", response.data, { path: "/" });
-        });
     }
 
     function onGoogleLoginError() {

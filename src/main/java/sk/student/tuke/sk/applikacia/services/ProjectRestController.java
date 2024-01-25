@@ -84,4 +84,25 @@ public class ProjectRestController {
         }
         return null;
     }
+
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping("/id")
+    @ResponseBody
+    public Project getProjectById(@RequestBody String requestBody) throws JSONException, DatabaseError, IOException {
+        JSONObject body = new JSONObject(requestBody);
+
+        if(body.has("jwt") && body.has("id") && body.has("username")) {
+            String token = body.get("jwt").toString();
+            Long id = Long.parseLong(body.get("id").toString());
+            String username = body.get("username").toString();
+            JwtVerify jwtVerify = new JwtVerify(username);
+            try {
+                jwtVerify.verify(token);
+            } catch (JWTVerificationException exception) {
+                return null;
+            }
+            return projectService.findById(id);
+        }
+        return null;
+    }
 }

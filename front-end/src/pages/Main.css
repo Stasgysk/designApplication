@@ -2,7 +2,7 @@
     display: flex;
     min-height: 100vh;
     min-width: 100vw;
-    background: #1c1c1c;
+    background: rgb(44,44,44);
 }
 
 #left-panel {
@@ -17,7 +17,7 @@
 }
 
 #user-info {
-    min-height: 20vh;
+    padding-bottom: 5px;
     border-bottom: #555555 solid 1px;
 }
 
@@ -25,6 +25,18 @@
     min-height: 20vh;
     border-bottom: #555555 solid 1px;
     color: white;
+}
+
+#add-project-button-container {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#add-project-button-container button{
 }
 
 #shop {
@@ -111,4 +123,86 @@
     background-color: black;
     color: white;
     font-size: 20px;
+}
+
+#profile-picture {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+#user-info-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#user-picture-container {
+    border-radius: 50%;
+}
+
+#user-info-user {
+    margin-top: 5px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+#user-info-user-background {
+    display: flex;
+    align-items: center;
+}
+
+#user-info-user-background:hover {
+    background-color: #555555;
+}
+
+#user-info-user h3{
+    color: white;
+    margin: 0 0 0 5px;
+}
+
+#create-close-project {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#create-close-project h3 {
+    margin: auto;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#arrow-down {
+    margin-left: 5px;
+}
+
+#settings-popup {
+    display: flex;
+    position: absolute;
+    min-width: 250px;
+    flex-direction: column;
+    background-color: #1c1c1c;
+    padding: 10px;
+    border-radius: 5px;
+    gap: 10px;
+}
+
+#settings-button {
+    width: 100px;
+}
+
+#projects h5{
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#projects-container {
+
 }

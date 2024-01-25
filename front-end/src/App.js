@@ -5,16 +5,29 @@ import {useCookies} from "react-cookie";
 import Main from "./pages/Main";
 import {useEffect, useState} from "react";
 import {getUsers} from "./api/user.service";
-import {getProjects} from "./api/project.service";
+import {getProjectById, getProjects} from "./api/project.service";
+import Project from "./pages/Project";
 
 
 function App() {
     const [cookies, setCookie] = useCookies(["jwtToken","user", "projects"]);
     const [projects, setProjects] = useState({});
+    const [currProject, setCurrProject] = useState({});
 
     useEffect(() => {
         init();
-    }, []);
+    }, [currProject]);
+
+    function setCurrProjectOnClick(id) {
+        const body = {
+            jwt: cookies.jwtToken,
+            id: id,
+            username: cookies.user.username
+        }
+        getProjectById(body).then((response) => {
+            setCurrProject(response.data);
+        });
+    }
 
     function init() {
         if(cookies?.user && cookies?.jwtToken){
@@ -45,7 +58,13 @@ function App() {
                 <div id="container">
                     <Routes>
                         {cookies?.user ? (
-                            <Route path="/" element={<Main/>}/>
+                            <Route path="/" element={
+                                currProject ? (
+                                        <Main setCurrProject={setCurrProjectOnClick}/>
+                                    ) : (
+                                        <Project/>
+                                    )
+                            }/>
                         ) : (
                             <Route path="/" element={<Login/>}/>
                         )}
