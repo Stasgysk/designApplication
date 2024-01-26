@@ -46,6 +46,7 @@ class CanvasObject extends React.Component {
         const offsetLeftRelElement = element.x - event.clientX;
         const offsetTopRelElement = element.y - event.clientY;
         console.log(offsetLeftRelElement);
+
         this.state.left = parseInt(event.clientX) - offsetLeft;
         this.state.top = parseInt(event.clientY) - offsetTop;
         parentElement.style.left = this.state.left + "px";
