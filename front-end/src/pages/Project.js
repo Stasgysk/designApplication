@@ -1,16 +1,131 @@
 import './Project.css';
+import './Main.css';
+import {useEffect, useRef, useState} from "react";
+import FileDropDown from "../components/UpperDropDown/FileDropDown";
+import EditDropDown from "../components/UpperDropDown/EditDropDown";
+import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
+import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
+import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
+import {Button, CloseButton} from "react-bootstrap";
+import ReactDOM from "react-dom/client";
+import {render} from "@testing-library/react";
+import CanvasObject from "../components/CanvasObject";
 
-export default function Project () {
+export default function Project (props) {
+    const [currProject, setCurrProject] = useState(null);
+    const [isFileDropDown, setIsFileDropDown] = useState(false);
+    const [isEditDropDown, setIsEditDropDown] = useState(false);
+    const [isImageDropDown, setIsImageDropDown] = useState(false);
+    const [isWindowDropDown, setIsWindowDropDown] = useState(false);
+    const [isHelpDropDown, setIsHelpDropDown] = useState(false);
+    const [showFilePopUp, setShowFilePopUp] = useState(false);
+    const inputFile = useRef(null);
+    const [file, setFile] = useState([]);
+
+    const onFileChange = (event) => {
+        if(event.target.files.length > 0) {
+            setFile(file => [...file, event.target.files[0]]);
+            setShowFilePopUp(false);
+        }
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
+
+
+    useEffect(() => {
+        showImportedFile();
+    }, [currProject, file]);
+
+    function showImportedFile() {
+        if(file !== null && file !== undefined) {
+            //console.log(file.name);
+        }
+    }
+
+    function onClickProject() {
+        setCurrProject(null);
+        props.setCurrProject(currProject);
+    }
+
+    function hideFilePopUp(){
+        setShowFilePopUp(false);
+    }
+
+    function handleFileOpen() {
+        setShowFilePopUp(true);
+    }
+
+    function onClickOpen() {
+        inputFile.current.click();
+    }
+
+    function triggerFileDropDown(){
+        if (isFileDropDown === true) {
+            setIsFileDropDown(false);
+        } else {
+            setIsFileDropDown(true);
+        }
+    }
+
+    function triggerEditDropDown(){
+        if (isEditDropDown === true) {
+            setIsEditDropDown(false);
+        } else {
+            setIsEditDropDown(true);
+        }
+    }
+
+    function triggerImageDropDown(){
+        if (isImageDropDown === true) {
+            setIsImageDropDown(false);
+        } else {
+            setIsImageDropDown(true);
+        }
+    }
+
+    function triggerWindowDropDown(){
+        if (isWindowDropDown === true) {
+            setIsWindowDropDown(false);
+        } else {
+            setIsWindowDropDown(true);
+        }
+    }
+
+    function triggerHelpDropDown(){
+        if (isHelpDropDown === true) {
+            setIsHelpDropDown(false);
+        } else {
+            setIsHelpDropDown(true);
+        }
+    }
+
     return (
         <div id="main-project-container">
             <div id="main-project-container-background">
                 <div id="project-content">
                     <div id="upper-project-menu">
-                        <button type="button" className="upper-menu-button">File</button>
-                        <button type="button" className="upper-menu-button">Edit</button>
-                        <button type="button" className="upper-menu-button">Image</button>
-                        <button type="button" className="upper-menu-button">Window</button>
-                        <button type="button" className="upper-menu-button">Help</button>
+                        <div className="menu" onMouseEnter={triggerFileDropDown} onMouseLeave={triggerFileDropDown}>
+                            <button type="button" className="upper-menu-button">File</button>
+                            {isFileDropDown && <FileDropDown leave={onClickProject} openFile={handleFileOpen}/>}
+                        </div>
+                        <div className="menu" onMouseEnter={triggerEditDropDown} onMouseLeave={triggerEditDropDown}>
+                            <button type="button" className="upper-menu-button">Edit</button>
+                            {isEditDropDown && <EditDropDown leave={onClickProject}/>}
+                        </div>
+                        <div className="menu" onMouseEnter={triggerImageDropDown} onMouseLeave={triggerImageDropDown}>
+                            <button type="button" className="upper-menu-button">Image</button>
+                            {isImageDropDown && <ImageDropDown leave={onClickProject}/>}
+                        </div>
+                        <div className="menu" onMouseEnter={triggerWindowDropDown} onMouseLeave={triggerWindowDropDown}>
+                            <button type="button" className="upper-menu-button">Window</button>
+                            {isWindowDropDown && <WindowDropDown leave={onClickProject}/>}
+                        </div>
+                        <div className="menu" onMouseEnter={triggerHelpDropDown} onMouseLeave={triggerHelpDropDown}>
+                            <button type="button" className="upper-menu-button">Help</button>
+                            {isHelpDropDown && <HelpDropDown leave={onClickProject}/>}
+                        </div>
                         <button type="button" className="upper-menu-button">+</button>
                     </div>
                     <div id="under-project-menu">
@@ -61,7 +176,9 @@ export default function Project () {
                         <div id="main-project-menu">
                             <div id="project-canvas">
                                 <div id="canvas">
-
+                                    {file && file.map(item => (
+                                        <CanvasObject src={URL.createObjectURL(item)} alt={item}/>
+                                    ))}
                                 </div>
                             </div>
                             <div id="project-right-options">
@@ -70,7 +187,29 @@ export default function Project () {
                         </div>
                     </div>
                 </div>
+
             </div>
+            {showFilePopUp && <div id="project-pop-up-dimmed">
+            </div>}
+            {showFilePopUp &&
+                <div id="project-pop-up">
+                    <div id="project-pop-up-form">
+                        <div id="project-pop-up-form-flex">
+                            <div id="create-close-project">
+                                <h3>Create new project</h3>
+                                <div>
+                                    <CloseButton onClick={hideFilePopUp}/>
+                                </div>
+                            </div>
+                            <form onSubmit={handleSubmit}>
+                                <input id="file" type="file" ref={inputFile} style={{display: 'none'}} onChange={onFileChange}/>
+                                <div className="button-container">
+                                    <Button className="project-create-button" variant="secondary" onClick={onClickOpen}>Open</Button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>}
         </div>
     )
 }

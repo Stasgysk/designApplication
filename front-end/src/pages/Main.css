@@ -46,8 +46,8 @@
 
 #projects-list {
     margin: 0;
-    padding: 0 0 0 30px;
-    max-height: 210px;
+    padding: 0 0 0 20px;
+    max-height: 270px;
     overflow-y: scroll;
 }
 
@@ -205,4 +205,11 @@
 
 #projects-container {
 
+}
+
+.projects:hover {
+    background-color: #555555;
+}
+
+.projects h6 {
 }

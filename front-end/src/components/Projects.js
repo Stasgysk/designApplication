@@ -16,15 +16,13 @@ function Projects (props) {
 
     return (
       <div id="projects-container">
-          <ol id="projects-list">
-              {Object.keys(projects).map(key => (
-                  <a id={projects[key]["id"]} onClick={onClick}>
-                      <li key={key}>
-                          <a>{projects[key]["name"]}</a>
-                      </li>
-                  </a>
+          <div id="projects-list">
+              {Object.keys(projects).map((key) => (
+                  <div id={projects[key]["id"]} onClick={onClick} key={projects[key]["name"]} className="projects">
+                      <h6>{parseInt(key) + 1}. {projects[key]["name"]}</h6>
+                  </div>
               ))}
-          </ol>
+          </div>
       </div>
     );
 }

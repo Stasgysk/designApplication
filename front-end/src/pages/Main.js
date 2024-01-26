@@ -1,6 +1,6 @@
 import './Main.css'
 import {useCookies} from "react-cookie";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {getProjects, postProject} from "../api/project.service";
 import Projects from "../components/Projects";
 import UserProfilePicture from "../components/UserProfilePicture";
@@ -26,6 +26,7 @@ export default function Main(props) {
 
     function onClickLogout() {
         removeCookie("user");
+        removeCookie("jwtToken");
     }
 
     function toggleProjectPopUpOn() {
@@ -78,27 +79,29 @@ export default function Main(props) {
                     <div id="user-info-container">
                         <div id="user-info-user">
                             <div>
-                                <a id="user-info-user-background" onClick={toggleSettingsPopUpOnOff}>
-                                    {cookies.user?.picture && (
-                                        <div id="user-picture-container">
-                                            <UserProfilePicture url={cookies.user.picture}></UserProfilePicture>
+                                <div onClick={toggleSettingsPopUpOnOff} onMouseLeave={toggleSettingsPopUpOnOff}>
+                                    <div id="user-info-user-background">
+                                        {cookies.user?.picture && (
+                                            <div id="user-picture-container">
+                                                <UserProfilePicture url={cookies.user.picture}></UserProfilePicture>
+                                            </div>
+                                        )}
+                                        {cookies.user?.username && (
+                                            <h3>{cookies.user.username}</h3>
+                                        )}
+                                        <div id="arrow-down">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
+                                                 className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                            </svg>
                                         </div>
-                                    )}
-                                    {cookies.user?.username && (
-                                        <h3>{cookies.user.username}</h3>
-                                    )}
-                                    <div id="arrow-down">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
-                                             className="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                            <path
-                                                d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-                                        </svg>
                                     </div>
-                                </a>
-                                {showSettingsDropdown && <div id="settings-popup">
-                                    <Button id="settings-button" variant="outline-secondary" onClick={turnSettingsPopupOn}>Settings</Button>
-                                    <Button variant="secondary" onClick={onClickLogout}>Logout</Button>
-                                </div>}
+                                    {showSettingsDropdown && <div id="settings-popup">
+                                        <Button id="settings-button" variant="outline-secondary" onClick={turnSettingsPopupOn}>Settings</Button>
+                                        <Button variant="secondary" onClick={onClickLogout}>Logout</Button>
+                                    </div>}
+                                </div>
                             </div>
                         </div>
                     </div>

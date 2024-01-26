@@ -12,13 +12,17 @@ import Project from "./pages/Project";
 function App() {
     const [cookies, setCookie] = useCookies(["jwtToken","user", "projects"]);
     const [projects, setProjects] = useState({});
-    const [currProject, setCurrProject] = useState({});
+    const [currProject, setCurrProject] = useState(null);
 
     useEffect(() => {
         init();
     }, [currProject]);
 
     function setCurrProjectOnClick(id) {
+        if(id === null) {
+            setCurrProject(null);
+            return;
+        }
         const body = {
             jwt: cookies.jwtToken,
             id: id,
@@ -60,9 +64,9 @@ function App() {
                         {cookies?.user ? (
                             <Route path="/" element={
                                 currProject ? (
-                                        <Main setCurrProject={setCurrProjectOnClick}/>
+                                    <Project setCurrProject={setCurrProjectOnClick}/>
                                     ) : (
-                                        <Project/>
+                                    <Main setCurrProject={setCurrProjectOnClick}/>
                                     )
                             }/>
                         ) : (

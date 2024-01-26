@@ -1,4 +1,5 @@
 #main-project-container {
+    display: flex;
     width: 100vw;
     height: 100vh;
 }
@@ -74,7 +75,7 @@
 }
 
 .upper-menu-button:hover {
-    background-color: #1c1c1c;
+    background-color: #444444;
 }
 
 .left-menu-button {
@@ -87,5 +88,9 @@
 }
 
 .left-menu-button:hover {
-    background-color: #1c1c1c;
+    background-color: #444444;
+}
+
+.canvas-image {
+    cursor: pointer;
 }

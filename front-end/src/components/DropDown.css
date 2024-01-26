@@ -1,0 +1,22 @@
+.dropdown-menu-upper {
+    background-color: #555555;
+    border: 1px #1c1c1c solid;
+    position: absolute;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-menu-upper button {
+    font-size: 13px;
+    color: white;
+    border: 0;
+    text-align: left;
+    background-color: #555555;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+.dropdown-menu-upper button:hover {
+    background-color: #666666;
+}
