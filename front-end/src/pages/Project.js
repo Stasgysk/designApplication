@@ -7,9 +7,7 @@ import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
 import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import {Button, CloseButton} from "react-bootstrap";
-import CanvasObject from "../components/CanvasObject";
-import {useImageSize} from "react-image-size";
-import CanvasImage from "../components/UpperDropDown/CanvasImage";
+import CanvasImage from "../components/CanvasImage";
 
 export default function Project (props) {
     const [currProject, setCurrProject] = useState(null);
