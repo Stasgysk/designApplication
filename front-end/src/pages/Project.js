@@ -8,6 +8,8 @@ import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import {Button, CloseButton} from "react-bootstrap";
 import CanvasObject from "../components/CanvasObject";
+import {useImageSize} from "react-image-size";
+import CanvasImage from "../components/UpperDropDown/CanvasImage";
 
 export default function Project (props) {
     const [currProject, setCurrProject] = useState(null);
@@ -175,7 +177,7 @@ export default function Project (props) {
                             <div id="project-canvas">
                                 <div id="canvas">
                                     {file && file.map(item => (
-                                        <CanvasObject key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item}/>
+                                        <CanvasImage key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item}/>
                                     ))}
                                 </div>
                             </div>

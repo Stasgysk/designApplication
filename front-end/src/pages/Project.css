@@ -91,9 +91,12 @@
     background-color: #444444;
 }
 
-.canvas-image {
+.canvas-image-container {
     left: 0;
     top: 0;
     cursor: pointer;
     position: relative;
+}
+
+.canvas-image {
 }

@@ -52,10 +52,25 @@ class CanvasObject extends React.Component {
         parentElement.style.left = this.state.left + "px";
         parentElement.style.top = this.state.top + "px";
     }
+
+    imageSize = (event) => {
+        console.log("event");
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("sss");
+    }
+
     render() {
         return (
-            <div onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} className="canvas-image" onDrag={this.drag}>
-                <img src={this.state.src} alt={this.state.alt}/>
+            <div onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} className="canvas-image-container" onDrag={this.drag}>
+                <div className="canvas-image" style={{
+                    backgroundImage: `url(${this.state.src})`,
+                    backgroundRepeat: 'no-repeat',
+                    width: `12px`,
+                    height: `12px`
+                }}>
+                </div>
             </div>
         )
     }
