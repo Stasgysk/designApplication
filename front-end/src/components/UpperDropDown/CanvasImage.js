@@ -36,51 +36,6 @@ function CanvasImage(props) {
         return await getImageSize(props.src);
     }
 
-    const onMouseDown = (event) => {
-        const element = event.target.parentElement;
-        console.log(imageInfo.offsetLeft);
-        imageInfo.left = parseInt(event.pageX) - imageInfo.offsetLeft;
-        imageInfo.top = parseInt(event.pageY) - imageInfo.offsetTop;
-        //element.style.left = this.imageInfo.left + "px";
-        //element.style.top = this.imageInfo.top + "px";
-        console.log(imageInfo.left);
-        // console.log("MouseDownX" + event.pageX);
-        // console.log("MouseDownY" + event.pageY);
-    }
-
-    function drag(event) {
-        // event.preventDefault();
-        // event.stopPropagation();
-        // const offsetLeft = imageInfo.offsetLeft;
-        // const offsetTop = imageInfo.offsetTop;
-        // if (event.pageX < offsetLeft || event.pageY < offsetTop) {
-        //     return;
-        // }
-        // const element = event.target;
-        // //const offsetLeftRelElement = element.x - event.clientX;
-        // //const offsetTopRelElement = element.y - event.clientY;
-        //
-        // imageInfo.left = parseInt(event.clientX) - offsetLeft;
-        // imageInfo.top = parseInt(event.clientY) - offsetTop;
-        // element.style.left = imageInfo.left + "px";
-        // element.style.top = imageInfo.top + "px";
-    }
-
-    function disableGhostImage(event) {
-        event.dataTransfer.setDragImage(new Image(),0 ,0);
-        event.dataTransfer.dropEffect = "none";
-    }
-
-    function mouseHandlerDown(event) {
-        console.log("DOWN");
-        console.log(event);
-    }
-
-    function mouseHandlerUp(event) {
-        console.log("UP");
-        console.log(event);
-    }
-
     if (imageInfo) {
         return (
             <animated.div {...setElementPos()} style={{
@@ -95,19 +50,6 @@ function CanvasImage(props) {
                 }}>
                 </div>
             </animated.div>
-            // <div draggable className="canvas-image-container" onDrag={drag}
-            //      onDragStart={disableGhostImage}
-            //      onMouseUp={mouseHandlerUp}
-            //      onMouseDown={mouseHandlerDown}
-            //      style={{width: `${imageInfo.width}px`, height: `${imageInfo.height}px`}}>
-            //     <div className="canvas-image" style={{
-            //         backgroundImage: `url(${imageInfo.src})`,
-            //         backgroundRepeat: 'no-repeat',
-            //         width: `${imageInfo.width}px`,
-            //         height: `${imageInfo.height}px`
-            //     }}>
-            //     </div>
-            // </div>
         )
     }
 }
