@@ -7,7 +7,10 @@ import { animated, useSpring } from '@react-spring/web';
 function CanvasImage(props) {
     const [imageInfo, setImageInfo] = useState({});
     const position = useSpring({ x: 0, y: 0 });
+    const imageId = "image-" + props.id;
     const setElementPos = useDrag((event) => {
+        const element = document.getElementById(imageId);
+        const elementPos = element.getBoundingClientRect();
         position.x.set(event.offset[0]);
         position.y.set(event.offset[1]);
     });
@@ -38,7 +41,7 @@ function CanvasImage(props) {
 
     if (imageInfo) {
         return (
-            <animated.div {...setElementPos()} style={{
+            <animated.div id={imageId} {...setElementPos()} style={{
                     x: position.x,
                     y: position.y,
                     touchAction: 'none',}}>

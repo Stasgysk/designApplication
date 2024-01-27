@@ -19,10 +19,12 @@ export default function Project (props) {
     const [showFilePopUp, setShowFilePopUp] = useState(false);
     const inputFile = useRef(null);
     const [file, setFile] = useState([]);
+    const [imagesCount, setImagesCount] = useState(0);
 
     const onFileChange = (event) => {
         if(event.target.files.length > 0) {
             setFile(file => [...file, event.target.files[0]]);
+            setImagesCount(imagesCount + 1);
             setShowFilePopUp(false);
         }
     }
@@ -175,7 +177,7 @@ export default function Project (props) {
                             <div id="project-canvas">
                                 <div id="canvas">
                                     {file && file.map(item => (
-                                        <CanvasImage key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item}/>
+                                        <CanvasImage id={imagesCount} key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item}/>
                                     ))}
                                 </div>
                             </div>
