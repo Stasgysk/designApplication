@@ -8,6 +8,9 @@ import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import {Button, CloseButton} from "react-bootstrap";
 import CanvasImage from "../components/CanvasImage";
+import {useSpring} from "@react-spring/web";
+import {useDrag} from "@use-gesture/react";
+import CanvasImageClass from "../components/CanvasImageClass";
 
 export default function Project (props) {
     const [currProject, setCurrProject] = useState(null);
@@ -19,12 +22,18 @@ export default function Project (props) {
     const [showFilePopUp, setShowFilePopUp] = useState(false);
     const inputFile = useRef(null);
     const [file, setFile] = useState([]);
-    const [imagesCount, setImagesCount] = useState(0);
+    let imageCount = 0;
+    const [canvasOffset, setCanvasOffset] = useState({});
 
     const onFileChange = (event) => {
         if(event.target.files.length > 0) {
             setFile(file => [...file, event.target.files[0]]);
-            setImagesCount(imagesCount + 1);
+            imageCount = imageCount + 1;
+            console.log(imageCount);
+            const canvasOffsetTop = document.getElementById("canvas").offsetTop;
+            const canvasOffsetLeft = document.getElementById("canvas").offsetLeft;
+            setCanvasOffset({x: canvasOffsetLeft, y: canvasOffsetTop});
+            //setImagesPositions(imagesPositions => [...imagesPositions, {id: imagesCount+1, x: 0, y: 0}]);
             setShowFilePopUp(false);
         }
     }
@@ -33,10 +42,9 @@ export default function Project (props) {
         event.preventDefault();
     };
 
-
     useEffect(() => {
         showImportedFile();
-    }, [currProject, file]);
+    }, [currProject, file, canvasOffset]);
 
     function showImportedFile() {
         if(file !== null && file !== undefined) {
@@ -177,7 +185,8 @@ export default function Project (props) {
                             <div id="project-canvas">
                                 <div id="canvas">
                                     {file && file.map(item => (
-                                        <CanvasImage id={imagesCount} key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item}/>
+                                        //<CanvasImageClass id={imageCount} src={URL.createObjectURL(item)}/>
+                                        <CanvasImage id={imageCount} key={URL.createObjectURL(item)} src={URL.createObjectURL(item)} alt={item} canvasOffset={canvasOffset}/>
                                     ))}
                                 </div>
                             </div>

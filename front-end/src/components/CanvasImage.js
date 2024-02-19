@@ -2,18 +2,13 @@ import React, {useEffect, useState} from "react";
 import {getImageSize} from "react-image-size";
 import { useDrag } from '@use-gesture/react';
 import { animated, useSpring } from '@react-spring/web';
-
+import {useSpringValue} from "react-spring";
+import Moveable from "react-moveable";
 
 function CanvasImage(props) {
     const [imageInfo, setImageInfo] = useState({});
-    const position = useSpring({ x: 0, y: 0 });
-    const imageId = "image-" + props.id;
-    const setElementPos = useDrag((event) => {
-        const element = document.getElementById(imageId);
-        const elementPos = element.getBoundingClientRect();
-        position.x.set(event.offset[0]);
-        position.y.set(event.offset[1]);
-    });
+    const targetRef = React.useRef(null);
+    const moveableRef = React.useRef(null);
 
     useEffect(() => {
         init();
@@ -39,20 +34,45 @@ function CanvasImage(props) {
         return await getImageSize(props.src);
     }
 
+    const style = {
+        maxWidth: "auto",
+        maxHeight: "auto",
+        minWidth: "auto",
+        minHeight: "auto"
+    }
+
     if (imageInfo) {
         return (
-            <animated.div id={imageId} {...setElementPos()} style={{
-                    x: position.x,
-                    y: position.y,
-                    touchAction: 'none',}}>
-                <div className="canvas-image" style={{
-                    backgroundImage: `url(${imageInfo.src})`,
-                    backgroundRepeat: 'no-repeat',
-                    width: `${imageInfo.width}px`,
-                    height: `${imageInfo.height}px`
-                }}>
-                </div>
-            </animated.div>
+        <div>
+            <img className="target" ref={targetRef} style={style} src={imageInfo.src}></img>
+            <Moveable
+                ref={moveableRef}
+                target={targetRef}
+                draggable={true}
+                throttleDrag={1}
+                edgeDraggable={false}
+                startDragRotate={0}
+                throttleDragRotate={0}
+                resizable={true}
+                keepRatio={false}
+                throttleResize={1}
+                renderDirections={["nw","n","ne","w","e","sw","s","se"]}
+                rotatable={true}
+                throttleRotate={0}
+                rotationPosition={"top"}
+                onDrag={e => {
+                    e.target.style.transform = e.transform;
+                }}
+                onResize={e => {
+                    e.target.style.width = `${e.width}px`;
+                    e.target.style.height = `${e.height}px`;
+                    e.target.style.transform = e.drag.transform;
+                }}
+                onRotate={e => {
+                    e.target.style.transform = e.drag.transform;
+                }}
+            />
+        </div>
         )
     }
 }
