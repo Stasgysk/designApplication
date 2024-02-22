@@ -6,7 +6,6 @@ import Main from "./pages/Main";
 import {useEffect, useState} from "react";
 import {getUsers} from "./api/user.service";
 import {getProjectById, getProjects} from "./api/project.service";
-import Project from "./pages/Project";
 import ProjectScreen from "./pages/ProjectScreen";
 
 
@@ -65,7 +64,7 @@ function App() {
                         {cookies?.user ? (
                             <Route path="/" element={
                                 currProject ? (
-                                    <ProjectScreen currProject={currProject}/>
+                                    <ProjectScreen currProject={currProject} setCurrProject={setCurrProject}/>
                                     ) : (
                                     <Main setCurrProject={setCurrProjectOnClick}/>
                                     )

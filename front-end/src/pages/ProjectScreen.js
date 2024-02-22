@@ -1,8 +1,12 @@
 import {Button, CloseButton} from "react-bootstrap";
 import React, {useState} from "react";
 import FileDropDown from "../components/UpperDropDown/FileDropDown";
-import CanvasImageClass from "../components/CanvasImageClass";
-import CanvasImage from "../components/CanvasImage";
+import TestImage from "../components/TestImage";
+import {Layer, Stage} from "react-konva";
+import EditDropDown from "../components/UpperDropDown/EditDropDown";
+import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
+import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
+import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
 
 class ProjectScreen extends React.Component {
     constructor(props) {
@@ -17,6 +21,8 @@ class ProjectScreen extends React.Component {
             showFilePopUp: false,
             files: [],
             fileCount: 0,
+            selectedId: null,
+            setCurrProject: props.setCurrProject
         }
         this.inputFile = React.createRef();
     }
@@ -30,6 +36,38 @@ class ProjectScreen extends React.Component {
             this.setState({isFileDropDown: false});
         } else {
             this.setState({isFileDropDown: true});
+        }
+    }
+
+    triggerEditDropDown = () => {
+        if (this.state.isEditDropDown === true) {
+            this.setState({isEditDropDown: false});
+        } else {
+            this.setState({isEditDropDown: true});
+        }
+    }
+
+    triggerImageDropDown = () => {
+        if (this.state.isImageDropDown === true) {
+            this.setState({isImageDropDown: false});
+        } else {
+            this.setState({isImageDropDown: true});
+        }
+    }
+
+    triggerWindowDropDown = () => {
+        if (this.state.isWindowDropDown === true) {
+            this.setState({isWindowDropDown: false});
+        } else {
+            this.setState({isWindowDropDown: true});
+        }
+    }
+
+    triggerHelpDropDown = () => {
+        if (this.state.isHelpDropDown === true) {
+            this.setState({isHelpDropDown: false});
+        } else {
+            this.setState({isHelpDropDown: true});
         }
     }
 
@@ -68,9 +106,23 @@ class ProjectScreen extends React.Component {
         this.inputFile.current.click();
     }
 
+    onSelect = (id) => {
+        this.setState({selectedId: id});
+    }
+
+    onObjectChange = (object, i) => {
+        let files = this.state.files;
+        files[i] = object;
+        this.setState({files: files});
+    }
+
+    leave = () => {
+        this.state.setCurrProject(null);
+    }
+
     render() {
         const listOfPicture = this.state.files.map((item) => (
-                <CanvasImage id={item.id} src={URL.createObjectURL(item)} offsetX={item.offsetX} offsetY={item.offsetY} x={item.x} y={item.y}/>
+                <TestImage id={item.id} src={URL.createObjectURL(item)} offsetX={item.offsetX} offsetY={item.offsetY} x={item.x} y={item.y}/>
                 )
         )
     return (
@@ -81,26 +133,26 @@ class ProjectScreen extends React.Component {
                             <div className="menu" onMouseEnter={this.triggerFileDropDown} onMouseLeave={this.triggerFileDropDown}>
                                 <button type="button" className="upper-menu-button">File</button>
                                 {this.state.isFileDropDown &&
-                                    <FileDropDown leave={this.onClickProject} openFile={this.handleFileOpen}/>
+                                    <FileDropDown leave={this.leave} openFile={this.handleFileOpen}/>
                                 }
                             </div>
-                            {/*<div className="menu" onMouseEnter={triggerEditDropDown} onMouseLeave={triggerEditDropDown}>*/}
-                            {/*    <button type="button" className="upper-menu-button">Edit</button>*/}
-                            {/*    {isEditDropDown && <EditDropDown leave={onClickProject}/>}*/}
-                            {/*</div>*/}
-                            {/*<div className="menu" onMouseEnter={triggerImageDropDown} onMouseLeave={triggerImageDropDown}>*/}
-                            {/*    <button type="button" className="upper-menu-button">Image</button>*/}
-                            {/*    {isImageDropDown && <ImageDropDown leave={onClickProject}/>}*/}
-                            {/*</div>*/}
-                            {/*<div className="menu" onMouseEnter={triggerWindowDropDown} onMouseLeave={triggerWindowDropDown}>*/}
-                            {/*    <button type="button" className="upper-menu-button">Window</button>*/}
-                            {/*    {isWindowDropDown && <WindowDropDown leave={onClickProject}/>}*/}
-                            {/*</div>*/}
-                            {/*<div className="menu" onMouseEnter={triggerHelpDropDown} onMouseLeave={triggerHelpDropDown}>*/}
-                            {/*    <button type="button" className="upper-menu-button">Help</button>*/}
-                            {/*    {isHelpDropDown && <HelpDropDown leave={onClickProject}/>}*/}
-                            {/*</div>*/}
-                            {/*<button type="button" className="upper-menu-button">+</button>*/}
+                            <div className="menu" onMouseEnter={this.triggerEditDropDown} onMouseLeave={this.triggerEditDropDown}>
+                                <button type="button" className="upper-menu-button">Edit</button>
+                                {this.state.isEditDropDown && <EditDropDown/>}
+                            </div>
+                            <div className="menu" onMouseEnter={this.triggerImageDropDown} onMouseLeave={this.triggerImageDropDown}>
+                                <button type="button" className="upper-menu-button">Image</button>
+                                {this.state.isImageDropDown && <ImageDropDown/>}
+                            </div>
+                            <div className="menu" onMouseEnter={this.triggerWindowDropDown} onMouseLeave={this.triggerWindowDropDown}>
+                                <button type="button" className="upper-menu-button">Window</button>
+                                {this.state.isWindowDropDown && <WindowDropDown/>}
+                            </div>
+                            <div className="menu" onMouseEnter={this.triggerHelpDropDown} onMouseLeave={this.triggerHelpDropDown}>
+                                <button type="button" className="upper-menu-button">Help</button>
+                                {this.state.isHelpDropDown && <HelpDropDown/>}
+                            </div>
+                            <button type="button" className="upper-menu-button">+</button>
                         </div>
                         <div id="under-project-menu">
                             <div id="left-project-menu">
@@ -150,7 +202,16 @@ class ProjectScreen extends React.Component {
                             <div id="main-project-menu">
                                 <div id="project-canvas">
                                     <div id="canvas">
-                                        {listOfPicture}
+                                        {listOfPicture.length >= 1 &&
+                                            <Stage
+                                                width={document.getElementById("canvas").offsetWidth}
+                                                height={document.getElementById("canvas").offsetHeight}
+                                            >
+                                                <Layer>
+                                                    {listOfPicture}
+                                                </Layer>
+                                            </Stage>
+                                        }
 
                                         {/*{this.state.files && this.state.files.map(item => */}
                                         {/*    // Object.keys(item).map(key => (*/}
