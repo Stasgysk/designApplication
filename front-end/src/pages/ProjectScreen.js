@@ -133,6 +133,19 @@ class ProjectScreen extends React.PureComponent {
         return files;
     }
 
+    deselectAllByState = (e) => {
+        if (e.target !== e.currentTarget){
+            return;
+        }
+        let files = this.state.files;
+        for(let i =0; i < files.length; i++){
+            files[i].isSelected = false;
+        }
+        this.setState({files: files}, function () {
+            this.forceUpdate();
+        });
+    }
+
     selectById = (id, value) => {
         let files = this.state.files;
         if(files[id].isSelected !== value){
@@ -244,6 +257,8 @@ class ProjectScreen extends React.PureComponent {
                                             <Stage
                                                 width={document.getElementById("canvas").offsetWidth}
                                                 height={document.getElementById("canvas").offsetHeight}
+                                                onMouseDown={this.deselectAllByState}
+                                                onTouchStart={this.deselectAllByState}
                                             >
                                                 <Layer>
                                                     {listOfPicture}
