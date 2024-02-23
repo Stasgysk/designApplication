@@ -1,14 +1,16 @@
+import './Project.css';
+import './Main.css';
 import {Button, CloseButton} from "react-bootstrap";
-import React, {useState} from "react";
+import React from "react";
 import FileDropDown from "../components/UpperDropDown/FileDropDown";
-import TestImage from "../components/TestImage";
+import CanvasImage from "../components/CanvasImage";
 import {Layer, Stage} from "react-konva";
 import EditDropDown from "../components/UpperDropDown/EditDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
 
-class ProjectScreen extends React.Component {
+class ProjectScreen extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,10 +23,11 @@ class ProjectScreen extends React.Component {
             showFilePopUp: false,
             files: [],
             fileCount: 0,
-            selectedId: null,
             setCurrProject: props.setCurrProject
         }
         this.inputFile = React.createRef();
+        this.images = React.createRef();
+        this.images.current = [];
     }
 
     onClickProject = () => {
@@ -85,29 +88,36 @@ class ProjectScreen extends React.Component {
     };
 
     onFileChange = (event) => {
+        if(this.state.files.length >= 1) {
+            let files = this.deselectAll(this.state.files);
+            this.setState({files: files});
+        }
         if(event.target.files.length > 0) {
             let file = event.target.files[0];
             file.id = this.state.fileCount;
             file.offsetX = document.getElementById("canvas").offsetLeft;
             file.offsetY = document.getElementById("canvas").offsetTop;
-            file.x = 0;
-            file.y = 0;
+            file.width = 0;
+            file.height = 0;
+            file.isSelected = true;
+            file.attrs = {};
             this.setState(previousState => ({
                 files: [...previousState.files, file]
             }), () => {
-                console.log(this.state.files);
             });
             this.setState({fileCount: this.state.fileCount + 1});
             this.hideFilePopUp();
         }
     }
 
-    openFileOnClick = () => {
-        this.inputFile.current.click();
+    onSizeChange = (id, file) => {
+        let arrayOfFiles = this.state.files;
+        arrayOfFiles[id] = file;
+        this.setState({files: arrayOfFiles});
     }
 
-    onSelect = (id) => {
-        this.setState({selectedId: id});
+    openFileOnClick = () => {
+        this.inputFile.current.click();
     }
 
     onObjectChange = (object, i) => {
@@ -116,13 +126,41 @@ class ProjectScreen extends React.Component {
         this.setState({files: files});
     }
 
+    deselectAll = (files) => {
+        for(let i =0; i < files.length; i++){
+            files[i].isSelected = false;
+        }
+        return files;
+    }
+
+    selectById = (id, value) => {
+        let files = this.state.files;
+        if(files[id].isSelected !== value){
+            files = this.deselectAll(files);
+            files[id].isSelected = value;
+            this.setState({files: files}, function () {
+                this.forceUpdate();
+            });
+        }
+    }
+
     leave = () => {
         this.state.setCurrProject(null);
     }
 
     render() {
         const listOfPicture = this.state.files.map((item) => (
-                <TestImage id={item.id} src={URL.createObjectURL(item)} offsetX={item.offsetX} offsetY={item.offsetY} x={item.x} y={item.y}/>
+                <CanvasImage id={item.id}
+                             src={URL.createObjectURL(item)}
+                             offsetX={item.offsetX}
+                             offsetY={item.offsetY}
+                             x={item.x}
+                             y={item.y}
+                             file={item}
+                             selectById={this.selectById}
+                             onSizeChange={this.onSizeChange}
+                             key={item.id}
+                />
                 )
         )
     return (
@@ -212,17 +250,6 @@ class ProjectScreen extends React.Component {
                                                 </Layer>
                                             </Stage>
                                         }
-
-                                        {/*{this.state.files && this.state.files.map(item => */}
-                                        {/*    // Object.keys(item).map(key => (*/}
-                                        {/*    //         <h1>*/}
-                                        {/*    //             dsadadsa*/}
-                                        {/*    //         </h1>*/}
-                                        {/*    //     )*/}
-                                        {/*        // return (*/}
-                                        {/*        //     //<CanvasImageClass id={1} src={URL.createObjectURL(item[key])}/>*/}
-                                        {/*        //     <CanvasImage id={1} key={URL.createObjectURL(item[key])} src={URL.createObjectURL(item[key])} alt={item[key]} canvasOffset={{x: 20, y: 20}}/>*/}
-                                        {/*        )})}*/}
                                     </div>
                                 </div>
                                 <div id="project-right-options">
