@@ -38,22 +38,41 @@ function CanvasImage(props) {
 
     return (
                 <Fragment>
-                    <Image
-                        key={file.id}
-                        image={image}
-                        onClick={onSelect}
-                        onTap={onSelect}
-                        ref={shapeRef}
-                        x={0}
-                        y={0}
-                        draggable
-                        onDragEnd={(e) => {
-                            updateImage(e.target.attrs);
-                        }}
-                        onTransformEnd={(e) => {
-                            updateImage(e.currentTarget.attrs);
-                        }}
-                    />
+                    {props.isDrawing &&
+                        <Image
+                            key={file.id}
+                            image={image}
+                            onClick={onSelect}
+                            onTap={onSelect}
+                            ref={shapeRef}
+                            x={0}
+                            y={0}
+                            onDragEnd={(e) => {
+                                updateImage(e.target.attrs);
+                            }}
+                            onTransformEnd={(e) => {
+                                updateImage(e.currentTarget.attrs);
+                            }}
+                        />
+                    }
+                    {!props.isDrawing &&
+                        <Image
+                            key={file.id}
+                            image={image}
+                            onClick={onSelect}
+                            onTap={onSelect}
+                            ref={shapeRef}
+                            x={0}
+                            y={0}
+                            draggable
+                            onDragEnd={(e) => {
+                                updateImage(e.target.attrs);
+                            }}
+                            onTransformEnd={(e) => {
+                                updateImage(e.currentTarget.attrs);
+                            }}
+                        />
+                    }
                     {file.isSelected && (
                         <Transformer
                             ref={trRef}
