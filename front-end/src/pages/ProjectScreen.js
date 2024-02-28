@@ -4,7 +4,7 @@ import {Button, CloseButton} from "react-bootstrap";
 import React from "react";
 import FileDropDown from "../components/UpperDropDown/FileDropDown";
 import CanvasImage from "../components/CanvasImage";
-import {Layer, Stage} from "react-konva";
+import {Layer, Line, Stage} from "react-konva";
 import EditDropDown from "../components/UpperDropDown/EditDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
@@ -22,7 +22,8 @@ class ProjectScreen extends React.PureComponent {
             isHelpDropDown: false,
             showFilePopUp: false,
             isDrawing: false,
-            lines: [],
+            isMouseDownDrawing: false,
+            lines: [{tool: 'pen', points: [0, 0]}],
             files: [],
             fileCount: 0,
             setCurrProject: props.setCurrProject
@@ -136,19 +137,27 @@ class ProjectScreen extends React.PureComponent {
     }
 
     deselectAllByState = (e) => {
+        console.log(e);
+        console.log(this.state.isDrawing);
         if(this.state.isDrawing){
-            return;
+            this.setState({isMouseDownDrawing: true});
+            const pos = e.target.getStage().getPointerPosition();
+            let line = {tool: 'pen', points: [pos.x, pos.y]};
+            let lines = this.state.lines;
+            lines.push(line);
+            this.setState({lines: lines});
+        } else {
+            if (e.target !== e.currentTarget){
+                return;
+            }
+            let files = this.state.files;
+            for(let i =0; i < files.length; i++){
+                files[i].isSelected = false;
+            }
+            this.setState({files: files}, function () {
+                this.forceUpdate();
+            });
         }
-        if (e.target !== e.currentTarget){
-            return;
-        }
-        let files = this.state.files;
-        for(let i =0; i < files.length; i++){
-            files[i].isSelected = false;
-        }
-        this.setState({files: files}, function () {
-            this.forceUpdate();
-        });
     }
 
     selectById = (id, value) => {
@@ -186,6 +195,31 @@ class ProjectScreen extends React.PureComponent {
         }
     }
 
+    handleMouseMove = (e) => {
+        if(!this.state.isDrawing){
+            return;
+        }
+        if(!this.state.isMouseDownDrawing){
+            return;
+        }
+        const stage = e.target.getStage();
+        const point = stage.getPointerPosition();
+        let lastLine = this.state.lines[this.state.lines.length - 1];
+        // add point
+        lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+        let lines = this.state.lines;
+        // replace last
+        lines.splice(lines.length - 1, 1, lastLine);
+        this.setState({lines: lines.concat()});
+    }
+
+    handleMouseUp = (e) => {
+        if(this.state.isMouseDownDrawing){
+            this.setState({isMouseDownDrawing: false});
+        }
+    }
+
     render() {
         const listOfPicture = this.state.files.map((item) => (
                 <CanvasImage id={item.id}
@@ -202,6 +236,26 @@ class ProjectScreen extends React.PureComponent {
                 />
                 )
         )
+        console.log(this.state.lines);
+        this.state.lines.map((item, i) => {
+            console.log(item);
+        })
+        const drawing = this.state.lines.map((item, i) => (
+                <Line
+                    key={i}
+                    points={item.points}
+                    stroke="#df4b26"
+                    strokeWidth={5}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+                    globalCompositeOperation={
+                        item.tool === 'eraser' ? 'destination-out' : 'source-over'
+                    }
+                />
+            )
+        )
+        console.log(drawing);
     return (
             <div id="main-project-container">
                 <div id="main-project-container-background">
@@ -285,9 +339,14 @@ class ProjectScreen extends React.PureComponent {
                                                 height={document.getElementById("canvas").offsetHeight}
                                                 onMouseDown={this.deselectAllByState}
                                                 onTouchStart={this.deselectAllByState}
+                                                onMousemove={this.handleMouseMove}
+                                                onMouseup={this.handleMouseUp}
                                             >
                                                 <Layer>
                                                     {listOfPicture}
+                                                </Layer>
+                                                <Layer>
+                                                    {drawing}
                                                 </Layer>
                                             </Stage>
                                         }
