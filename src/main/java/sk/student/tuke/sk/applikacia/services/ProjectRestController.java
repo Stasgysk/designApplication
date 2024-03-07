@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sk.student.tuke.sk.applikacia.entities.Project;
 import sk.student.tuke.sk.applikacia.entities.User;
 import sk.student.tuke.sk.applikacia.exceptions.DatabaseError;
@@ -104,5 +105,44 @@ public class ProjectRestController {
             return projectService.findById(id);
         }
         return null;
+    }
+
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping("/id/save")
+    @ResponseBody
+    public JSONObject saveProject(@RequestBody String requestBody, @RequestPart("images") MultipartFile[] images) throws JSONException {
+        JSONObject body = new JSONObject(requestBody);
+
+        if(body.has("jwt") && body.has("id") && body.has("username")) {
+            String token = body.get("jwt").toString();
+            Long id = Long.parseLong(body.get("id").toString());
+            String username = body.get("username").toString();
+            JwtVerify jwtVerify = new JwtVerify(username);
+            try {
+                jwtVerify.verify(token);
+            } catch (JWTVerificationException exception) {
+                return new JSONObject("{\"error\": \"Not authorized\"}");
+            }
+        }
+
+        if(body.has("images")) {
+            JSONObject imagesInfo = (JSONObject) body.get("images");
+            imagesInfo.keys().forEachRemaining(key -> {
+                try {
+                    JSONObject value = (JSONObject) imagesInfo.get((String)key);
+                    Integer width = (Integer) value.get("width");
+                    Integer height = (Integer) value.get("height");
+                    String name = value.get("name").toString();
+                    for (int i = 0; i < images.length; i++) {
+                        byte[] bytes = images[i].getBytes();
+                    }
+                } catch (JSONException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        }
+
+        return new JSONObject("{\"status\": \"Saved\"}");
     }
 }
