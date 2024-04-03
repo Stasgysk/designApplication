@@ -64,7 +64,7 @@ function App() {
                         {cookies?.user ? (
                             <Route path="/" element={
                                 currProject ? (
-                                    <ProjectScreen currProject={currProject} setCurrProject={setCurrProject}/>
+                                    <ProjectScreen currProject={currProject} setCurrProject={setCurrProject} userName={cookies.user.username.toString()}/>
                                     ) : (
                                     <Main setCurrProject={setCurrProjectOnClick}/>
                                     )

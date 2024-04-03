@@ -2,14 +2,16 @@ package sk.student.tuke.sk.applikacia.services;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import sk.student.tuke.sk.applikacia.entities.Project;
 import sk.student.tuke.sk.applikacia.entities.User;
 import sk.student.tuke.sk.applikacia.exceptions.DatabaseError;
+import sk.student.tuke.sk.applikacia.graphics.ImageProcessing;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -73,7 +75,7 @@ public class ProjectRestController {
                 return null;
             }
 
-            String path = "C:\\DesignApp\\Projects\\" + username + "\\" + body.get("projectname").toString() + ".json";
+            String path = "C:\\DesignApp\\Projects\\" + username + "\\" + body.get("projectname").toString() + "\\" + body.get("projectname").toString() + ".json";
             File projectFile = new File(path);
             projectFile.getParentFile().mkdirs();
             projectFile.createNewFile();
@@ -89,7 +91,7 @@ public class ProjectRestController {
     @CrossOrigin(origins = "#{${react.address}}")
     @PostMapping("/id")
     @ResponseBody
-    public Project getProjectById(@RequestBody String requestBody) throws JSONException, DatabaseError, IOException {
+    public Project getProjectById(@RequestBody String requestBody) throws JSONException, DatabaseError {
         JSONObject body = new JSONObject(requestBody);
 
         if(body.has("jwt") && body.has("id") && body.has("username")) {
@@ -110,39 +112,30 @@ public class ProjectRestController {
     @CrossOrigin(origins = "#{${react.address}}")
     @PostMapping("/id/save")
     @ResponseBody
-    public JSONObject saveProject(@RequestBody String requestBody, @RequestPart("images") MultipartFile[] images) throws JSONException {
+    public String saveProject(@RequestBody String requestBody) throws JSONException, IOException {
         JSONObject body = new JSONObject(requestBody);
+        JSONObject project = (JSONObject) body.get("project");
 
-        if(body.has("jwt") && body.has("id") && body.has("username")) {
-            String token = body.get("jwt").toString();
-            Long id = Long.parseLong(body.get("id").toString());
-            String username = body.get("username").toString();
-            JwtVerify jwtVerify = new JwtVerify(username);
-            try {
-                jwtVerify.verify(token);
-            } catch (JWTVerificationException exception) {
-                return new JSONObject("{\"error\": \"Not authorized\"}");
-            }
+        String projectName = project.get("name").toString();
+        String defaultPath = "C:\\DesignApp\\Projects\\" + body.get("userName") + "\\" + projectName + "\\";
+        new File(defaultPath).mkdirs();
+
+        int height = Integer.parseInt(body.get("canvasHeight").toString());
+        int width = Integer.parseInt(body.get("canvasWidth").toString());
+
+        ImageProcessing imageProcessing = new ImageProcessing(width, height, Color.WHITE, defaultPath);
+        imageProcessing.initBackground();
+
+        JSONArray jsonArray = body.getJSONArray("pictures");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+            JSONObject attrs = (JSONObject) jsonObject.get("attrs");
+            int posX = (int) Float.parseFloat(attrs.get("x").toString());
+            int posY = (int) Float.parseFloat(attrs.get("y").toString());
+            String fileName = jsonObject.get("fileName").toString();
+            imageProcessing.addImages(posX, posY, jsonObject.get("data").toString(), fileName);
         }
 
-        if(body.has("images")) {
-            JSONObject imagesInfo = (JSONObject) body.get("images");
-            imagesInfo.keys().forEachRemaining(key -> {
-                try {
-                    JSONObject value = (JSONObject) imagesInfo.get((String)key);
-                    Integer width = (Integer) value.get("width");
-                    Integer height = (Integer) value.get("height");
-                    String name = value.get("name").toString();
-                    for (int i = 0; i < images.length; i++) {
-                        byte[] bytes = images[i].getBytes();
-                    }
-                } catch (JSONException | IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-        }
-
-        return new JSONObject("{\"status\": \"Saved\"}");
+        return "{\"status\": \"Saved\"}";
     }
 }

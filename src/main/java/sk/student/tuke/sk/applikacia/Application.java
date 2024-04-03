@@ -3,7 +3,6 @@ package sk.student.tuke.sk.applikacia;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import sk.student.tuke.sk.applikacia.graphics.ImageProcessing;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -15,7 +14,6 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ImageProcessing imageProcessing = new ImageProcessing(1000, 1000, "black");
-        imageProcessing.createImage();
+
     }
 }
