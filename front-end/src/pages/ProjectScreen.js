@@ -247,6 +247,15 @@ class ProjectScreen extends React.PureComponent {
         }
         saveProject(body).then((response) => {
             console.log(response);
+            const blob = new Blob([response.data]);
+            const href = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = href;
+            link.setAttribute('download', 'image.png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
         });
     }
 

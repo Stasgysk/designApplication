@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sk.student.tuke.sk.applikacia.entities.Project;
 import sk.student.tuke.sk.applikacia.entities.User;
@@ -13,7 +14,9 @@ import sk.student.tuke.sk.applikacia.graphics.ImageProcessing;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,9 +113,8 @@ public class ProjectRestController {
     }
 
     @CrossOrigin(origins = "#{${react.address}}")
-    @PostMapping("/id/save")
-    @ResponseBody
-    public String saveProject(@RequestBody String requestBody) throws JSONException, IOException {
+    @PostMapping(value = "/id/save", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public @ResponseBody byte[] saveProject(@RequestBody String requestBody) throws JSONException, IOException {
         JSONObject body = new JSONObject(requestBody);
         JSONObject project = (JSONObject) body.get("project");
 
@@ -133,9 +135,15 @@ public class ProjectRestController {
             int posX = (int) Float.parseFloat(attrs.get("x").toString());
             int posY = (int) Float.parseFloat(attrs.get("y").toString());
             String fileName = jsonObject.get("fileName").toString();
-            imageProcessing.addImages(posX, posY, jsonObject.get("data").toString(), fileName);
+            float scaleX = Float.parseFloat(attrs.get("scaleX").toString());
+            float scaleY = Float.parseFloat(attrs.get("scaleY").toString());
+            double rotation = Double.parseDouble(attrs.get("rotation").toString());
+            imageProcessing.addImages(posX, posY, jsonObject.get("data").toString(), fileName, scaleX, scaleY, rotation);
         }
-
-        return "{\"status\": \"Saved\"}";
+        File file = new File(defaultPath + "background.png");
+        InputStream inputStream = new FileInputStream(file);
+        byte[] fileContent = inputStream.readAllBytes();
+        inputStream.close();
+        return fileContent;
     }
 }
