@@ -128,18 +128,16 @@ public class ProjectRestController {
         ImageProcessing imageProcessing = new ImageProcessing(width, height, Color.WHITE, defaultPath);
         imageProcessing.initBackground();
 
-        JSONArray jsonArray = body.getJSONArray("pictures");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-            JSONObject attrs = (JSONObject) jsonObject.get("attrs");
-            int posX = (int) Float.parseFloat(attrs.get("x").toString());
-            int posY = (int) Float.parseFloat(attrs.get("y").toString());
-            String fileName = jsonObject.get("fileName").toString();
-            float scaleX = Float.parseFloat(attrs.get("scaleX").toString());
-            float scaleY = Float.parseFloat(attrs.get("scaleY").toString());
-            double rotation = Double.parseDouble(attrs.get("rotation").toString());
-            imageProcessing.addImages(posX, posY, jsonObject.get("data").toString(), fileName, scaleX, scaleY, rotation);
+        JSONArray jsonArrayPictures = body.getJSONArray("pictures");
+        for (int i = 0; i < jsonArrayPictures.length(); i++) {
+            imageProcessing.parseJsonObject((JSONObject) jsonArrayPictures.get(i), "pictures");
         }
+
+        JSONArray jsonArrayLines = body.getJSONArray("lines");
+        for (int i = 1; i < jsonArrayLines.length(); i++) {
+            imageProcessing.parseJsonObject((JSONObject) jsonArrayLines.get(i), "lines");
+        }
+
         File file = new File(defaultPath + "background.png");
         InputStream inputStream = new FileInputStream(file);
         byte[] fileContent = inputStream.readAllBytes();

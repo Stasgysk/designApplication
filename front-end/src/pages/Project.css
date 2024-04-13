@@ -101,3 +101,8 @@
 
 .canvas-image {
 }
+
+.color-palette-button {
+    padding: 5px;
+    background-color: red;
+}

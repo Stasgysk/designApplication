@@ -10,6 +10,8 @@ import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
 import {getProjectById, saveProject} from "../api/project.service";
+import CanvasText from "../components/CanvasText";
+import {ColorPalette} from "../components/ColorPalette";
 
 class ProjectScreen extends React.PureComponent {
     constructor(props) {
@@ -24,7 +26,25 @@ class ProjectScreen extends React.PureComponent {
             showFilePopUp: false,
             isDrawing: false,
             isMouseDownDrawing: false,
-            lines: [{tool: 'pen', points: [0, 0]}],
+            isColorPalette: false,
+            currColor: "#df4b26",
+            currColorRGBA: {
+              a: 1,
+              r: 223,
+              g: 75,
+              b: 38
+            },
+            lines: [{
+                properties: {
+                    tool: 'pen',
+                    stroke: "#df4b26",
+                    strokeWidth: 5,
+                    tension: 0,
+                    lineCap: "round",
+                    lineJoin: "round"
+                },
+                points: [0, 0]
+            }],
             files: [],
             fileCount: 0,
             setCurrProject: props.setCurrProject
@@ -75,6 +95,14 @@ class ProjectScreen extends React.PureComponent {
             this.setState({isHelpDropDown: false});
         } else {
             this.setState({isHelpDropDown: true});
+        }
+    }
+
+    triggerColorPalette = () => {
+        if (this.state.isColorPalette === true) {
+            this.setState({isColorPalette: false});
+        } else {
+            this.setState({isColorPalette: true});
         }
     }
 
@@ -158,7 +186,18 @@ class ProjectScreen extends React.PureComponent {
         if(this.state.isDrawing){
             this.setState({isMouseDownDrawing: true});
             const pos = e.target.getStage().getPointerPosition();
-            let line = {tool: 'pen', points: [pos.x, pos.y]};
+            let line = {
+                properties: {
+                    tool: 'pen',
+                    stroke: this.state.currColor,
+                    strokeWidth: 5,
+                    tension: 0,
+                    lineCap: "round",
+                    lineJoin: "round",
+                    rgb: this.state.currColorRGBA
+                },
+                points: [pos.x, pos.y]
+            };
             let lines = this.state.lines;
             lines.push(line);
             this.setState({lines: lines});
@@ -236,10 +275,17 @@ class ProjectScreen extends React.PureComponent {
         }
     }
 
+    onChangeColor = (e) => {
+        console.log(e);
+        this.setState({currColorRGBA: e.rgb});
+        this.setState({currColor: e.hex});
+    }
+
     saveProject = (e) => {
         console.log(this.state.files);
         const body = {
             pictures: this.state.files,
+            lines: this.state.lines,
             project: this.state.currProject,
             canvasHeight: document.getElementById("canvas").offsetHeight,
             canvasWidth: document.getElementById("canvas").offsetWidth,
@@ -275,21 +321,18 @@ class ProjectScreen extends React.PureComponent {
                 />
                 )
         )
-        //console.log(this.state.lines);
-        // this.state.lines.map((item, i) => {
-        //    // console.log(item);
-        // })
         const drawing = this.state.lines.map((item, i) => (
                 <Line
                     key={i}
                     points={item.points}
-                    stroke="#df4b26"
-                    strokeWidth={5}
-                    tension={0.5}
-                    lineCap="round"
-                    lineJoin="round"
+                    stroke={item.properties.stroke}
+                    strokeWidth={item.properties.strokeWidth}
+                    tension={item.properties.tension}
+                    lineCap={item.properties.lineCap}
+                    lineJoin={item.properties.lineJoin}
+                    closed={false}
                     globalCompositeOperation={
-                        item.tool === 'eraser' ? 'destination-out' : 'source-over'
+                        item.properties.tool === 'eraser' ? 'destination-out' : 'source-over'
                     }
                 />
             )
@@ -354,6 +397,11 @@ class ProjectScreen extends React.PureComponent {
                                             d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 5l-7.147 7.146A.5.5 0 0 0 1 12.5v1.793l-.854.853a.5.5 0 1 0 .708.707L1.707 15H3.5a.5.5 0 0 0 .354-.146L11 7.707l1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 3.147-3.146a1.207 1.207 0 0 0 0-1.708l-2-2zM2 12.707l7-7L10.293 7l-7 7H2v-1.293z"/>
                                     </svg>
                                 </button>
+                                <button type="button" className="left-menu-button" onClick={this.triggerColorPalette}>
+                                    <svg width="25" height="25">
+                                        <rect width="25" height="25" fill={this.state.currColor}></rect>
+                                    </svg>
+                                </button>
                                 {/*<button type="button" className="left-menu-button">*/}
                                 {/*    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"*/}
                                 {/*         className="bi bi-paint-bucket" viewBox="0 0 16 16">*/}
@@ -372,27 +420,34 @@ class ProjectScreen extends React.PureComponent {
                             <div id="main-project-menu">
                                 <div id="project-canvas">
                                     <div id="canvas">
-                                        {listOfPicture.length >= 1 &&
+                                        {(drawing.length >= 1 || listOfPicture.length >= 1) &&
                                             <Stage
-                                                width={document.getElementById("canvas").offsetWidth}
-                                                height={document.getElementById("canvas").offsetHeight}
+                                                width={document.getElementById("canvas") ? document.getElementById("canvas").offsetWidth : 0}
+                                                height={document.getElementById("canvas") ? document.getElementById("canvas").offsetHeight : 0}
                                                 onMouseDown={this.deselectAllByState}
                                                 onTouchStart={this.deselectAllByState}
                                                 onMousemove={this.handleMouseMove}
                                                 onMouseup={this.handleMouseUp}
                                             >
-                                                <Layer>
-                                                    {listOfPicture}
-                                                </Layer>
-                                                <Layer>
-                                                    {drawing}
-                                                </Layer>
+                                                {listOfPicture.length >= 1 &&
+                                                    <Layer>
+                                                        {listOfPicture}
+                                                    </Layer>
+                                                }
+                                                {drawing.length >= 1 &&
+                                                    <Layer>
+                                                        {drawing}
+                                                    </Layer>
+                                                }
                                             </Stage>
+
                                         }
                                     </div>
                                 </div>
                                 <div id="project-right-options">
-
+                                    {this.state.isColorPalette &&
+                                        <ColorPalette onChange={this.onChangeColor} color={this.state.currColor}></ColorPalette>
+                                    }
                                 </div>
                             </div>
                         </div>

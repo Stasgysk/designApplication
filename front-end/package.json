@@ -16,6 +16,7 @@
     "next": "^14.0.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
+    "react-color-palette": "^7.1.1",
     "react-cookie": "^7.0.1",
     "react-dom": "^18.2.0",
     "react-facebook-login": "^4.1.1",

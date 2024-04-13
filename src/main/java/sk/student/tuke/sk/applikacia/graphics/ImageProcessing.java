@@ -4,6 +4,9 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.ColorProcessor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,7 +48,52 @@ public class ImageProcessing {
         FileSaver saver = new FileSaver(image);
         saver.saveAsJpeg(this.backgroundImagePath);
     }
-    public void addImages(int posX, int posY, String base64Image, String fileName, float scaleX, float scaleY, double rotation) throws IOException {
+
+    public void parseJsonObject(JSONObject jsonObject, String type) throws JSONException, IOException {
+        if(type.equals("pictures")) {
+            JSONObject attrs = (JSONObject) jsonObject.get("attrs");
+            int posX = (int) Float.parseFloat(attrs.get("x").toString());
+            int posY = (int) Float.parseFloat(attrs.get("y").toString());
+            String fileName = jsonObject.get("fileName").toString();
+            float scaleX = Float.parseFloat(attrs.get("scaleX").toString());
+            float scaleY = Float.parseFloat(attrs.get("scaleY").toString());
+            double rotation = Double.parseDouble(attrs.get("rotation").toString());
+            this.addImages(posX, posY, jsonObject.get("data").toString(), fileName, scaleX, scaleY, rotation);
+        } else if (type.equals("lines")) {
+            System.out.println(jsonObject);
+            this.addLines(jsonObject);
+        }
+
+    }
+
+    private void addLines(JSONObject jsonObject) throws JSONException, IOException {
+        BufferedImage background = ImageIO.read(new File(this.backgroundImagePath));
+        JSONObject properties = (JSONObject) jsonObject.get("properties");
+        int radius = properties.getInt("strokeWidth");
+        JSONObject colorObject = (JSONObject) properties.get("rgb");
+        System.out.println((int)(colorObject.getDouble("a") * 255));
+        Color color = new Color(colorObject.getInt("r"), colorObject.getInt("g"), colorObject.getInt("b"), (int) (colorObject.getDouble("a") * 255));
+        JSONArray lines = jsonObject.getJSONArray("points");
+        Graphics2D graphics2D = background.createGraphics();
+        graphics2D.setColor(color);
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setStroke(new BasicStroke(radius));
+        for (int i = 0; i < lines.length() - 1; i = i + 2) {
+            int x = lines.getInt(i);
+            int y = lines.getInt(i + 1);
+            if (i < lines.length() - 3) {
+                int nextX = lines.getInt(i + 2);
+                int nextY = lines.getInt(i + 3);
+                graphics2D.drawLine(x, y, nextX, nextY);
+            }
+        }
+
+        graphics2D.dispose();
+
+        ImageIO.write(background, "png", new File(this.backgroundImagePath));
+    }
+
+    private void addImages(int posX, int posY, String base64Image, String fileName, float scaleX, float scaleY, double rotation) throws IOException {
         this.posX = posX;
         this.posY = posY;
 
@@ -101,7 +149,6 @@ public class ImageProcessing {
         Rectangle2D rotatedBounds = rotateRectangle(w, h, angle, rotatedCorners);
         this.posX += rotatedBounds.getX();
         this.posY += rotatedBounds.getY();
-        System.out.println(posX + "x" + posY);
         return rotatedImage;
     }
 
