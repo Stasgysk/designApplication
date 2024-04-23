@@ -213,3 +213,54 @@
 
 .projects h6 {
 }
+
+#upper-center-title {
+    height: 25%;
+}
+
+#components-column {
+    width: 100%;
+    height: 75%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.components-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.component {
+    padding: 10px;
+    flex: 0 1 calc(14.28% - 20px);
+}
+
+.component-img {
+    margin: auto;
+    background-color: darkblue;
+    text-align: center;
+    aspect-ratio: 1 / 1;
+    height: 70%;
+    display: grid;
+    border-radius: 8%;
+}
+
+.bi {
+    margin: auto;
+    fill: white;
+    width: 70%;
+    aspect-ratio: 1/1;
+}
+
+.component-text {
+    margin-top: 10px;
+    color: white;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.component-button {
+    text-align: right;
+}

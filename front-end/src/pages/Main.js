@@ -72,6 +72,23 @@ export default function Main(props) {
         toggleProjectPopUpOff();
     }
 
+    function toggleComponents(e) {
+        const value = e.currentTarget.id;
+        console.log(value);
+        let user_settings = cookies.user.user_settings;
+        switch (value) {
+            case "crop-button":
+                user_settings.map(setting => {
+                    if(setting.hasOwnProperty('crop')) {
+                        setting.crop = setting.crop !== true;
+                    }
+                })
+        }
+        console.log(user_settings);
+        cookies.user.user_settings = user_settings;
+        setCookie("user", cookies.user, { path: "/" });
+    }
+
     return (
         <div id="main-container">
             <div id="left-panel">
@@ -118,6 +135,38 @@ export default function Main(props) {
                 </div>
             </div>
             <div id="center-right-panel">
+                <div id="upper-center-title">
+
+                </div>
+                <div id="components-column">
+                    <div className="components-row">
+                        <div className="component">
+                            <div className="component-img">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="bi bi-crop" viewBox="0 0 16 16">
+                                    <path className="bi-inner" d="M3.5.5A.5.5 0 0 1 4 1v13h13a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2H3.5a.5.5 0 0 1-.5-.5V4H1a.5.5 0 0 1 0-1h2V1a.5.5 0 0 1 .5-.5m2.5 3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4H6.5a.5.5 0 0 1-.5-.5"/>
+                                </svg>
+                            </div>
+                            <div className="component-text">
+                                <h6>Crop function</h6>
+                                <div className="component-button">
+                                    <Button variant="secondary" size="sm" id="crop-button" onClick={toggleComponents}>Add</Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="component"></div>
+                        <div className="component"></div>
+                        <div className="component"></div>
+                        <div className="component"></div>
+                        <div className="component"></div>
+                        <div className="component"></div>
+                    </div>
+                    <div className="components-row">
+
+                    </div>
+                    <div className="components-row">
+
+                    </div>
+                </div>
             </div>
             {showProjectAdd && <div id="project-pop-up-dimmed">
             </div>}

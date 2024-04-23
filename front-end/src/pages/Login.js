@@ -5,6 +5,7 @@ import { CookiesProvider, useCookies } from "react-cookie";
 import {postUser} from "../api/user.service";
 import {getProjects} from "../api/project.service";
 import {useEffect} from "react";
+import {getDefaultUserSettings} from "../objectsTemplates/UserSettings";
 
 
 export default function Login(props) {
@@ -29,7 +30,8 @@ export default function Login(props) {
         const cookieToStore = {
             username: user.name.toString(),
             email: user.email.toString(),
-            picture: user.picture.toString()
+            picture: user.picture.toString(),
+            user_settings: getDefaultUserSettings()
         };
         postUser(cookieToStore).then((response) => {
             setCookie("jwtToken", response.data.jwt, { path: "/" });

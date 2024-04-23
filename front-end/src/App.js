@@ -34,7 +34,7 @@ function App() {
     }
 
     function init() {
-        if(cookies?.user && cookies?.jwtToken){
+        if(cookies?.user && cookies?.jwtToken && cookies.user?.username){
             const body = {
                 username: cookies.user.username.toString(),
                 email: cookies.user.email.toString(),

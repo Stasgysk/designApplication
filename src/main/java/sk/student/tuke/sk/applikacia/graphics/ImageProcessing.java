@@ -11,6 +11,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -69,19 +70,23 @@ public class ImageProcessing {
     private void addLines(JSONObject jsonObject) throws JSONException, IOException {
         BufferedImage background = ImageIO.read(new File(this.backgroundImagePath));
         JSONObject properties = (JSONObject) jsonObject.get("properties");
-        int radius = properties.getInt("strokeWidth");
+        double radius = properties.getDouble("strokeWidth");
         JSONObject colorObject = (JSONObject) properties.get("rgb");
         System.out.println((int)(colorObject.getDouble("a") * 255));
         Color color = new Color(colorObject.getInt("r"), colorObject.getInt("g"), colorObject.getInt("b"), (int) (colorObject.getDouble("a") * 255));
         JSONArray lines = jsonObject.getJSONArray("points");
         Graphics2D graphics2D = background.createGraphics();
         graphics2D.setColor(color);
-        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics2D.setStroke(new BasicStroke(radius));
+        graphics2D.setStroke(new BasicStroke((float) radius));
+        System.out.println(radius);
         for (int i = 0; i < lines.length() - 1; i = i + 2) {
+            graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int x = lines.getInt(i);
             int y = lines.getInt(i + 1);
-            if (i < lines.length() - 3) {
+            Ellipse2D.Double circle = new Ellipse2D.Double(x - (radius / 2), y - (radius / 2), radius, radius);
+            graphics2D.fill(circle);
+            if (i < lines.length() - 3 && radius < 20.0) {
+                graphics2D.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
                 int nextX = lines.getInt(i + 2);
                 int nextY = lines.getInt(i + 3);
                 graphics2D.drawLine(x, y, nextX, nextY);

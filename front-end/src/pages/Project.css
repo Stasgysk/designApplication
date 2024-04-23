@@ -106,3 +106,37 @@
     padding: 5px;
     background-color: red;
 }
+
+#right-drawing-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 5px;
+}
+
+.single-thumb .range-slider__thumb[data-lower] {
+    width: 0;
+}
+
+.single-thumb .range-slider__range {
+    border-radius: 6px;
+}
+
+#stroke-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: white;
+}
+
+#stroke-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+#stroke-input {
+    width: 25%;
+    margin-left: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+}

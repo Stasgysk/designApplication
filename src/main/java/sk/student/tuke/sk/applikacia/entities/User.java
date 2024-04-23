@@ -28,7 +28,7 @@ public class User {
     private String email;
 
     @Type(JsonBinaryType.class)
-    private List<String> user_settings;
+    private List<Object> user_settings;
 
     private String phone_number;
 
@@ -38,7 +38,7 @@ public class User {
 
     private String picture;
 
-    public User(String username, @Nullable String firstname, @Nullable String surname, String email, @Nullable List<String> user_settings, @Nullable String phone_number, @Nullable String gender, @Nullable Integer age, String picture) {
+    public User(String username, @Nullable String firstname, @Nullable String surname, String email, @Nullable List<Object> user_settings, @Nullable String phone_number, @Nullable String gender, @Nullable Integer age, String picture) {
         this.username = username;
         this.firstname = firstname;
         this.surname = surname;
@@ -63,6 +63,15 @@ public class User {
 
     protected User() {
 
+    }
+
+    public void updateAll(User user) {
+        this.setAge(user.getAge());
+        this.setGender(user.getGender());
+        this.setFirstname(user.getFirstname());
+        this.setSurname(user.getSurname());
+        this.setPhone_number(user.getPhone_number());
+        this.setUser_settings(user.getUser_settings());
     }
 
     @Override

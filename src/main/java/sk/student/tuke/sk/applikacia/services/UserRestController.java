@@ -32,6 +32,8 @@ public class UserRestController {
         List<User> userList = userService.getAll();
         for(User userInList: userList) {
             if(userInList.getUsername().equals(user.getUsername()) || userInList.getEmail().equals(user.getEmail())){
+                userInList.updateAll(user);
+                userService.add(userInList);
                 return null;
             }
         }
