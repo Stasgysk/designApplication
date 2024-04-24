@@ -237,6 +237,12 @@
     flex: 0 1 calc(14.28% - 20px);
 }
 
+.component-background {
+    padding: 10px;
+    background-color: #555555;
+    border-radius: 10px;
+}
+
 .component-img {
     margin: auto;
     background-color: darkblue;
@@ -263,4 +269,68 @@
 
 .component-button {
     text-align: right;
+}
+
+#upper-center-title {
+    display: flex;
+}
+
+#component-shop-field {
+    background-color: #555555;
+    border-radius: 10px;
+    display: flex;
+    margin: auto;
+    flex-direction: row;
+    padding: 15px;
+}
+
+#component-stop-text-area {
+    width: 70%;
+    height: 100%;
+    color: white;
+}
+
+#component-stop-img-area {
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+
+#component-shop-icon-background {
+    display: inline-block;
+    background-color: #001E36;
+    border-radius: 10px;
+}
+
+#component-shop-icon {
+    fill: #3A89FF;
+}
+
+#other-field {
+    color: white;
+}
+
+#other-field h5 {
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#component-shop-button {
+    padding: 2px 2px 7px 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+#component-shop-button:hover {
+    background-color: #555555;
+}
+
+#component-shop-button.active {
+    background-color: #555555;
+}
+
+#component-shop-button h6 {
+    margin: 0.25rem 0 0 0.5rem;
 }
