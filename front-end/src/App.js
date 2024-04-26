@@ -38,7 +38,7 @@ function App() {
             const body = {
                 username: cookies.user.username.toString(),
                 email: cookies.user.email.toString(),
-                picture: cookies.user.picture.toString(),
+                picture: cookies.user.picture?.toString(),
                 jwt: cookies.jwtToken
             };
             getUsers(body).then((response) => {
@@ -47,7 +47,7 @@ function App() {
             const bodyProjects = {
                 username: cookies.user.username.toString(),
                 email: cookies.user.email.toString(),
-                picture: cookies.user.picture.toString(),
+                picture: cookies.user.picture?.toString(),
                 jwt: cookies.jwtToken
             };
             getProjects(bodyProjects).then((response) => {

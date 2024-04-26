@@ -34,7 +34,8 @@ public class UserRestController {
             if(userInList.getUsername().equals(user.getUsername()) || userInList.getEmail().equals(user.getEmail())){
                 userInList.updateAll(user);
                 userService.add(userInList);
-                return null;
+                String jwtToken = new JwtVerify(user.getUsername()).getToken();
+                return new UserAuthResponse(jwtToken, user);
             }
         }
         String jwtToken = new JwtVerify(user.getUsername()).getToken();

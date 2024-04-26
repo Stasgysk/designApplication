@@ -73,10 +73,15 @@ export default function Main(props) {
             projectname: projectName
         };
         postProject(body).then((response) => {
-            var projects = cookies.projects;
-            projects.push(response.data);
-            setCookie("projects", projects, { path: "/" });
-            setProjects(projects);
+            console.log(response.data);
+            let projectsCookies = cookies.projects;
+            if(!projectsCookies) {
+                projectsCookies = [];
+            }
+            console.log(projectsCookies);
+            projectsCookies.push(response.data);
+            setCookie("projects", projectsCookies, { path: "/" });
+            setProjects(projectsCookies);
         });
         toggleProjectPopUpOff();
     }

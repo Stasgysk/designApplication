@@ -68,3 +68,11 @@ CREATE TABLE IF NOT EXISTS added_components
     FOREIGN KEY (component_id) REFERENCES components(id)
 );
 
+CREATE TABLE IF NOT EXISTS passwords
+(
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    password VARCHAR(4000) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+

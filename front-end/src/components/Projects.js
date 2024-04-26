@@ -12,16 +12,18 @@ function Projects (props) {
 
     useEffect(() => {
         setProjects(cookies.projects);
-    }, [projects, cookies]);
+    }, [cookies]);
 
     return (
       <div id="projects-container">
           <div id="projects-list">
-              {Object.keys(projects).map((key) => (
-                  <div id={projects[key]["id"]} onClick={onClick} key={projects[key]["name"]} className="projects">
-                      <h6>{parseInt(key) + 1}. {projects[key]["name"]}</h6>
-                  </div>
-              ))}
+              {projects &&
+                  Object.keys(projects).map((key) => (
+                      <div id={projects[key]["id"]} onClick={onClick} key={projects[key]["name"]} className="projects">
+                          <h6>{parseInt(key) + 1}. {projects[key]["name"]}</h6>
+                      </div>
+                  ))
+              }
           </div>
       </div>
     );
