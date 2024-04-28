@@ -9,19 +9,18 @@ import EditDropDown from "../components/UpperDropDown/EditDropDown";
 import HelpDropDown from "../components/UpperDropDown/HelpDropDown";
 import WindowDropDown from "../components/UpperDropDown/WindowDropDown";
 import ImageDropDown from "../components/UpperDropDown/ImageDropDown";
-import {getProjectById, saveProject} from "../api/project.service";
-import CanvasText from "../components/CanvasText";
+import {saveProjectAsImage, saveProject, getProjectData} from "../api/project.service";
 import {ColorPalette} from "../components/ColorPalette";
 import Cookies from 'js-cookie';
 import {StrokeWidthSlider} from "../components/StrokeWidthSlider";
-import { toPng } from 'html-to-image';
 
 class ProjectScreen extends React.PureComponent {
     constructor(props) {
         super(props);
+        const user = JSON.parse(Cookies.get('user'));
         this.state = {
             currProject: props.currProject,
-            currUser: JSON.parse(Cookies.get('user')),
+            currUser: user,
             isFileDropDown: false,
             isEditDropDown: false,
             isImageDropDown: false,
@@ -58,6 +57,20 @@ class ProjectScreen extends React.PureComponent {
         this.images = React.createRef();
         this.canvas = React.createRef();
         this.images.current = [];
+        const body = {
+            project: props.currProject,
+            userName: this.props.userName
+        }
+        getProjectData(body).then(response => {
+            console.log(response);
+            if(response.data.lines) {
+                this.setState({lines: response.data.lines});
+            }
+            if(response.data.pictures) {
+                this.setState({files: response.data.pictures});
+            }
+        });
+        console.log(this.state);
     }
 
     onClickProject = () => {
@@ -290,7 +303,7 @@ class ProjectScreen extends React.PureComponent {
         this.setState({currStrokeWidth: newStroke});
     }
 
-    saveProject = (e) => {
+    saveProjectAsImage = (e) => {
         // const uri = this.canvas.current.toDataURL();
         // console.log(uri);
         // const link = document.createElement('a');
@@ -317,7 +330,7 @@ class ProjectScreen extends React.PureComponent {
             canvasWidth: document.getElementById("canvas").offsetWidth,
             userName: this.props.userName
         }
-        saveProject(body).then((response) => {
+        saveProjectAsImage(body).then((response) => {
             console.log(response);
             const blob = new Blob([response.data]);
             const href = URL.createObjectURL(blob);
@@ -331,14 +344,28 @@ class ProjectScreen extends React.PureComponent {
         });
     }
 
+    saveProject = (e) => {
+        const body = {
+            pictures: this.state.files,
+            lines: this.state.lines,
+            project: this.state.currProject,
+            canvasHeight: document.getElementById("canvas").offsetHeight,
+            canvasWidth: document.getElementById("canvas").offsetWidth,
+            userName: this.props.userName
+        }
+        saveProject(body).then((response) => {
+
+        });
+    }
+
     render() {
         const listOfPicture = this.state.files.map((item) => (
-                <CanvasImage id={item.id}
-                             src={URL.createObjectURL(item)}
+            <CanvasImage id={item.id}
+                             src={`data:image/jpeg;base64,${item.data}`}
                              offsetX={item.offsetX}
                              offsetY={item.offsetY}
-                             x={item.x}
-                             y={item.y}
+                             x={item.attrs.x}
+                             y={item.attrs.y}
                              file={item}
                              selectById={this.selectById}
                              onSizeChange={this.onSizeChange}
@@ -377,7 +404,7 @@ class ProjectScreen extends React.PureComponent {
                             <div className="menu" onMouseEnter={this.triggerFileDropDown} onMouseLeave={this.triggerFileDropDown}>
                                 <button type="button" className="upper-menu-button">File</button>
                                 {this.state.isFileDropDown &&
-                                    <FileDropDown leave={this.leave} openFile={this.handleFileOpen} save={this.saveProject}/>
+                                    <FileDropDown leave={this.leave} openFile={this.handleFileOpen} save={this.saveProject} saveImage={this.saveProjectAsImage}/>
                                 }
                             </div>
                             <div className="menu" onMouseEnter={this.triggerEditDropDown} onMouseLeave={this.triggerEditDropDown}>

@@ -153,6 +153,7 @@ export default function Login(props) {
                                             placeholder="Username or email"
                                         />
                                         <input
+                                            type="password"
                                             className="login-form-input"
                                             placeholder="Password"
                                         />
@@ -185,6 +186,7 @@ export default function Login(props) {
                                             placeholder="Email"
                                         />
                                         <input
+                                            type="password"
                                             className="login-form-input"
                                             placeholder="Password"
                                         />

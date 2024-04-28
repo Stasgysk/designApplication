@@ -13,13 +13,11 @@ import sk.student.tuke.sk.applikacia.exceptions.DatabaseError;
 import sk.student.tuke.sk.applikacia.graphics.ImageProcessing;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -113,8 +111,8 @@ public class ProjectRestController {
     }
 
     @CrossOrigin(origins = "#{${react.address}}")
-    @PostMapping(value = "/id/save", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public @ResponseBody byte[] saveProject(@RequestBody String requestBody) throws JSONException, IOException {
+    @PostMapping(value = "/id/saveAs", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public @ResponseBody byte[] saveProjectAsImage(@RequestBody String requestBody) throws JSONException, IOException {
         JSONObject body = new JSONObject(requestBody);
         JSONObject project = (JSONObject) body.get("project");
 
@@ -143,5 +141,65 @@ public class ProjectRestController {
         byte[] fileContent = inputStream.readAllBytes();
         inputStream.close();
         return fileContent;
+    }
+
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping(value = "/id/save")
+    public String saveProject(@RequestBody String requestBody) throws JSONException, IOException {
+        JSONObject body = new JSONObject(requestBody);
+        JSONObject project = (JSONObject) body.get("project");
+
+        String projectName = project.get("name").toString();
+        String defaultPath = "C:\\DesignApp\\Projects\\" + body.get("userName") + "\\" + projectName + "\\";
+
+        try {
+            new File(defaultPath).mkdirs();
+            File file = new File(defaultPath + "projectJson.json");
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        try {
+            FileWriter fileWriter = new FileWriter(defaultPath + "projectJson.json");
+            fileWriter.write(requestBody);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+
+        return "hello";
+    }
+
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping(value = "/id/data")
+    public String getProjectData(@RequestBody String requestBody) throws JSONException, IOException {
+        JSONObject body = new JSONObject(requestBody);
+        JSONObject project = (JSONObject) body.get("project");
+
+        String projectName = project.get("name").toString();
+        String defaultPath = "C:\\DesignApp\\Projects\\" + body.get("userName") + "\\" + projectName + "\\";
+
+        File file = new File(defaultPath + "projectJson.json");
+        if(!file.exists()) {
+            return "\"error\":\"Doesn't exists!\"";
+        }
+
+        String data = "";
+
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                data = myReader.nextLine();
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
+
+        return data;
     }
 }
