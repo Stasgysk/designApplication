@@ -2,7 +2,7 @@ import './App.css';
 import {Route, Routes} from "react-router-dom"
 import Login from "./pages/Login";
 import {useCookies} from "react-cookie";
-import Main from "./pages/Main";
+import Home from "./pages/Home";
 import {useEffect, useState} from "react";
 import {getUsers} from "./api/user.service";
 import {getProjectById, getProjects} from "./api/project.service";
@@ -66,7 +66,7 @@ function App() {
                                 currProject ? (
                                     <ProjectScreen currProject={currProject} setCurrProject={setCurrProject} userName={cookies.user.username.toString()}/>
                                     ) : (
-                                    <Main setCurrProject={setCurrProjectOnClick}/>
+                                    <Home setCurrProject={setCurrProjectOnClick}/>
                                     )
                             }/>
                         ) : (

@@ -1,5 +1,5 @@
 import './Project.css';
-import './Main.css';
+import './Home.css';
 import {Button, CloseButton} from "react-bootstrap";
 import React from "react";
 import FileDropDown from "../components/UpperDropDown/FileDropDown";

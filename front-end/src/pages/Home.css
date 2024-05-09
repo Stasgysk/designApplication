@@ -13,6 +13,7 @@
 }
 
 #center-right-panel {
+    background: url("../../public/background.png") no-repeat fixed 50% 50%;
     width: 100%;
 }
 
