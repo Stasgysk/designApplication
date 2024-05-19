@@ -87,4 +87,24 @@ public class UserRestController {
         }
         return null;
     }
+
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping("/change")
+    @ResponseBody
+    public UserAuthResponse changeUserInfo(@RequestBody String requestBody) throws DatabaseError, JSONException {
+        JSONObject body = new JSONObject(requestBody);
+        System.out.println(body);
+        String oldUserName = (String) body.get("oldUserName");
+
+        User user = userService.findByName(oldUserName);
+
+        user.setUsername((String) body.get("userName"));
+        user.setEmail((String) body.get("email"));
+
+        userService.add(user);
+
+        String jwtToken = new JwtVerify(user.getUsername()).getToken();
+
+        return new UserAuthResponse(jwtToken, user);
+    }
 }

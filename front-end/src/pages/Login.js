@@ -6,7 +6,6 @@ import {getPassword, postPassword, postUser} from "../api/user.service";
 import {getProjects} from "../api/project.service";
 import {useEffect, useState} from "react";
 import {getDefaultUserSettings} from "../objectsTemplates/UserSettings";
-import { sha256 } from 'js-sha256';
 
 export default function Login(props) {
     const [cookies, setCookie] = useCookies(["jwtToken", "user", "projects"]);
@@ -32,7 +31,8 @@ export default function Login(props) {
             username: user.name.toString(),
             email: user.email.toString(),
             picture: user.picture.toString(),
-            user_settings: getDefaultUserSettings()
+            user_settings: getDefaultUserSettings(),
+            isGoogleLogin: true
         };
         postUser(cookieToStore).then((response) => {
             setCookie("jwtToken", response.data.jwt, { path: "/" });
@@ -67,7 +67,7 @@ export default function Login(props) {
         const email = e.target[1].value;
         const password = e.target[2].value;
         const body = {
-            password: sha256(password),
+            password: password,
             username: username,
             email: email
         }
@@ -80,7 +80,8 @@ export default function Login(props) {
             const cookieToStore = {
                 username: username,
                 email: email,
-                user_settings: getDefaultUserSettings()
+                user_settings: getDefaultUserSettings(),
+                isGoogleLogin: false
             };
             setCookie("jwtToken", response.data.jwt, { path: "/" });
             setCookie("user", cookieToStore, { path: "/" });
@@ -97,7 +98,7 @@ export default function Login(props) {
         console.log(firstField);
         if(firstField.includes("@")) {
             const passwordBody = {
-                password: sha256(password),
+                password: password,
                 email: firstField
             };
             console.log(passwordBody);
@@ -110,7 +111,7 @@ export default function Login(props) {
             });
         } else {
             const passwordBody = {
-                password: sha256(password),
+                password: password,
                 username: firstField
             };
             console.log(passwordBody);
@@ -130,7 +131,8 @@ export default function Login(props) {
             username: data.username.toString(),
             email: data.email.toString(),
             user_settings: getDefaultUserSettings(),
-            jwt: data.jwt
+            jwt: data.jwt,
+            isGoogleLogin: false
         };
         setCookie("user", cookieToStore, { path: "/" });
         getProjects(cookieToStore).then((response) => {

@@ -1,5 +1,6 @@
 package sk.student.tuke.sk.applikacia.services;
 
+import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -8,6 +9,8 @@ import sk.student.tuke.sk.applikacia.entities.Password;
 import sk.student.tuke.sk.applikacia.entities.User;
 import sk.student.tuke.sk.applikacia.exceptions.DatabaseError;
 
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -45,7 +48,7 @@ public class PasswordRestController {
             User savedUser = getUserByEmail(userService.getAll(), email);
             assert savedUser != null;
             jwtToken = new JwtVerify(savedUser.getUsername()).getToken();
-            Password passwordObject = new Password(savedUser.getId(), password);
+            Password passwordObject = new Password(savedUser.getId(), hashPassword(password));
             passwordService.add(passwordObject);
         } catch (Exception e) {
             System.out.println(e);
@@ -60,7 +63,7 @@ public class PasswordRestController {
     @CrossOrigin(origins = "#{${react.address}}")
     @PostMapping("/get")
     @ResponseBody
-    public String getPassword(@RequestBody String requestBody) throws JSONException, DatabaseError {
+    public String getPassword(@RequestBody String requestBody) throws JSONException, DatabaseError, NoSuchAlgorithmException {
         JSONObject body = new JSONObject(requestBody);
         List<User> userList = userService.getAll();
         String password = body.getString("password");
@@ -83,14 +86,52 @@ public class PasswordRestController {
         return "{\"error\": \"Bad Request\"}";
     }
 
-    private String getUserJSON(User user, String passwordString) throws DatabaseError, JSONException {
+    @CrossOrigin(origins = "#{${react.address}}")
+    @PostMapping("/change")
+    @ResponseBody
+    public String changePassword(@RequestBody String requestBody) throws JSONException, DatabaseError, NoSuchAlgorithmException {
+        JSONObject body = new JSONObject(requestBody);
+        List<User> userList = userService.getAll();
+        String password = body.getString("password");
+        password = hashPassword(password);
+        if(body.has("email")) {
+            String email = body.getString("email");
+            User user = getUserByEmail(userList, email);
+            if(user == null) {
+                return "{\"error\": \"Not Found\"}";
+            }
+            Password passwordToChange = passwordService.findById(user.getId());
+            passwordToChange.setPassword(password);
+
+            passwordService.add(passwordToChange);
+
+            return "{\"result\": \"Password changed!\"}";
+        } else if(body.has("username")) {
+            String userName = body.getString("username");
+            User user = getUserByName(userList, userName);
+            if(user == null) {
+                return "{\"error\": \"Not Found\"}";
+            }
+            Password passwordToChange = passwordService.findById(user.getId());
+            passwordToChange.setPassword(password);
+
+            passwordService.add(passwordToChange);
+
+            return "{\"result\": \"Password changed!\"}";
+        }
+        return "{\"error\": \"Bad Request\"}";
+    }
+
+    private String getUserJSON(User user, String passwordString) throws DatabaseError, JSONException, NoSuchAlgorithmException {
         Password password = passwordService.findById(user.getId());
 
         if(password == null) {
             return "{\"error\": \"Not Found\"}";
         }
 
-        if(password.getPassword().equals(passwordString)) {
+        String hashedPassowrd = hashPassword(passwordString);
+
+        if(password.getPassword().equals(hashedPassowrd)) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", user.getId());
             jsonObject.put("username", user.getUsername());
@@ -118,5 +159,11 @@ public class PasswordRestController {
             }
         }
         return null;
+    }
+
+    private String hashPassword(String password) {
+        return Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString();
     }
 }

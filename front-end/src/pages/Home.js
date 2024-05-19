@@ -5,6 +5,7 @@ import {postProject} from "../api/project.service";
 import Projects from "../components/Projects";
 import UserProfilePicture from "../components/UserProfilePicture";
 import {Button, CloseButton} from 'react-bootstrap';
+import UserInfoChangeFields from "../components/UserInfoChangeFields";
 
 export default function Home(props) {
     const [cookies, setCookie , removeCookie] = useCookies(["jwtToken", "user", "projects"]);
@@ -260,9 +261,9 @@ export default function Home(props) {
             {showSettingsPopup && <div id="project-pop-up-dimmed">
             </div>}
             {showSettingsPopup &&
-                <div id="project-pop-up">
-                    <div id="project-pop-up-form">
-                        <div id="project-pop-up-form-flex">
+                <div id="user-pop-up">
+                    <div id="user-pop-up-form">
+                        <div id="user-pop-up-form-flex">
                             <div id="create-close-project">
                                 <div>
                                     <CloseButton onClick={turnSettingsPopupOff}/>
@@ -279,12 +280,7 @@ export default function Home(props) {
                             {cookies.user?.email && (
                                 <h5>{cookies.user.email}</h5>
                             )}
-                            {/*<form>*/}
-                            {/*    <input id="project-name" type="text" placeholder="Project name" value={projectName} onChange={setProjectNameOnChange}/>*/}
-                            {/*    <div className="button-container">*/}
-                            {/*        <Button className="project-create-button" onClick={onClickAddProject} variant="secondary">Create</Button>*/}
-                            {/*    </div>*/}
-                            {/*</form>*/}
+                            <UserInfoChangeFields cookies={cookies}></UserInfoChangeFields>
                         </div>
                     </div>
                 </div>}
