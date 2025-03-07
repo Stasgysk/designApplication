@@ -1,4 +1,4 @@
-# Aplikácia pre dizajn a tvorbu grafiky - Code
+# Application for design and graphics creation
 
 
 
